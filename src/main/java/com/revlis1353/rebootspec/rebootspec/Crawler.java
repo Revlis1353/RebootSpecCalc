@@ -1,39 +1,60 @@
 package com.revlis1353.rebootspec.rebootspec;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Component;
 
 public class Crawler{
     private static final String siteUrlBase = "https://maplestory.nexon.com";
     private static final String siteUrlRankingPrefix = "/Ranking/World/Total?c=";
     private static final String siteUrlPostfix = "&w=254";
+    private static final String STATSSELECTER[] = {"STR", "DEX", "INT", "LUK", "Null"};
+    private static final String ATTSELECTER[] = {"공격력", "마력"};
 
     private String characterName;
+    private int mainStatSel;   //0:STR, 1:DEX, 2:INT, 3:LUK
+    private int subStat1Sel;
+    private int subStat2Sel; 
+    private int attmagSel;     //0:ATTACK, 1:MAGIC
 
     public Crawler(String characterName){
         this.characterName = characterName;
+        this.mainStatSel = 3;
+        this.subStat1Sel = 0;
+        this.subStat2Sel = 1;
+        this.attmagSel = 0;
     }
 
-    public String getCharacterItemData(){
+    public void getCharacterItemData(){
         String siteUrl = siteUrlBase + siteUrlRankingPrefix + characterName + siteUrlPostfix;
         String characterUrl = getCharacterUrl(siteUrl);
         String equipmentUrl = getCharacterEquipmentUrl(characterUrl);
-        System.out.println("#######characterUrl = " + characterUrl);
-        System.out.println("#######equipmentUrl = " + equipmentUrl);
         
-        String testUrl = process(equipmentUrl).getElementsByClass("item_pot").select("li > span > a").attr("href");
-        System.out.println("#######testUrl = " + siteUrlBase + testUrl);
-        //String testUrl = "/Common/Resource/Item?p=ESiGOaxye8ZazwJEjUhfLAYcZDqAikORwKq87%2b0QbMVC75O8X%2b6oMHRoMKsUvqlefD3TjOcfotZtUHNwIhc4Gh2TrmxV36BWXQpwuzBx61QuNZI2z4KFuRmRS23XQAJ0WkR2fzBiV39Ku9sqy9OFJAGQW47NPIi40By%2bNYuxLg3ZEfIvRneJDjh4BkM6gbbRaNHdnA4hshz3%2bOh8hc%2frPA8VwvOe979g3KNtDV%2bCa2yhwwqbyMYfMu8KpEm7gsy780nVEYw35%2b7B7k6os5ol%2b9lSX6bEc4crlHJjEOMarhWK%2bev9phWI%2bt%2bPJbzA6R%2bup9DyiwBecYQw%2bivDsWvfsQ%3d%3d&_=1657161394637";
-        System.out.println(jsoupXMLHttpRequest(siteUrlBase + testUrl, equipmentUrl).body());
-        // equipmenturl에서 아이템 데이터를 크롤링, 분류하여 MAP에 담아 return
-        return "";
+        Elements equipmentsTags = process(equipmentUrl).getElementsByClass("weapon_wrap").select("ul > li > span > a");
+
+        Iterator<Element> iter = equipmentsTags.iterator();
+        for(int i = 0; i < 14; i++){ //TODO: Default i = 25
+            Element element = (Element)iter.next();
+            String elementUrl = element.attr("href");
+
+            if(elementUrl.isBlank()) continue;
+
+            //Get Item data from Url
+            String itemInfo = jsoupXMLHttpRequest(siteUrlBase + elementUrl, equipmentUrl).body();
+            //Convert unicode & escape character to document
+            itemInfo = StringEscapeUtils.unescapeJava(itemInfo.substring(18, itemInfo.length()-2));
+            Document itemDocument = Jsoup.parse(itemInfo);
+
+            getEquipment(itemDocument);
+            //TODO: Add equipment to List and send data to Character
+        }
     }
     
     private String getCharacterUrl(String siteUrl){
@@ -54,8 +75,103 @@ public class Crawler{
         return "Null";
     }
 
-    private String getEquipmentData(){
-        return "0";
+    private DataItem getEquipment(Document itemDocument){
+
+        DataItem item = new DataItem();
+
+        item.setItemName(itemDocument.getElementsByClass("item_memo_title").text());
+        item.setReqLev(Integer.parseInt(itemDocument.getElementsByClass("ablilty01").select("ul > li > em").text().split(" ")[0]));
+        
+        Elements Stats = itemDocument.getElementsByClass("stet_info").select("ul > li");
+
+        for(Element stat : Stats){  //Find main Stats
+            if(stat.select("div > span").text().equals(STATSSELECTER[mainStatSel])){
+                item.setMainstat(Integer.parseInt(stat.getElementsByClass("point_td").text().split(" ")[0]));
+                break;
+            }
+        }
+        for(Element stat : Stats){  //Find substat1
+            if(stat.select("div > span").text().equals(STATSSELECTER[subStat1Sel])){
+                item.setSubstat1(Integer.parseInt(stat.getElementsByClass("point_td").text().split(" ")[0]));
+                break;
+            }
+        }
+        if(subStat2Sel != 4){  //If subStat2 is exist
+            for(Element stat : Stats){  //Find substat2
+                if(stat.select("div > span").text().equals(STATSSELECTER[subStat2Sel])){
+                    item.setSubstat2(Integer.parseInt(stat.getElementsByClass("point_td").text().split(" ")[0]));
+                    break;
+                }
+            }
+        }
+        for(Element stat : Stats){  //Find Att or Mag
+            if(stat.select("div > span").text().equals(ATTSELECTER[attmagSel])){
+                item.setAttmag(Integer.parseInt(stat.getElementsByClass("point_td").text().split(" ")[0]));                break;
+            }
+        }
+        for(Element stat : Stats){  //Find AllstatPercent
+            if(stat.select("div > span").text().equals("올스탯")){
+                item.setAllstatPercent(Integer.parseInt(StringUtils.chop(stat.getElementsByClass("point_td").text().split(" ")[0])));
+                break;
+            }
+        }
+        for(Element stat : Stats){  //Find BossDMG
+            if(stat.select("div > span").text().equals("보스 몬스터 공격 시 데미지")){
+                item.setBossDMG(Integer.parseInt(StringUtils.chop(stat.getElementsByClass("point_td").text().split(" ")[0])));
+                break;
+            }
+        }
+        for(Element stat : Stats){  //Find Penetrate
+            if(stat.select("div > span").text().equals("몬스터 방어력 무시")){
+                item.setPenetrate(Integer.parseInt(StringUtils.chop(stat.getElementsByClass("point_td").text().split(" ")[0])));
+                break;
+            }
+        }
+
+        for(Element stat : Stats){  //Find Potential
+            if(stat.select("div > span").text().split(" ")[0].equals("잠재옵션")){
+                String potential[] = stat.getElementsByClass("point_td").text().split(" ");
+                for(int i = 0; i < potential.length; i = i+3){
+                    if(potential[i].equals(STATSSELECTER[mainStatSel])){
+                        if(potential[i+2].endsWith("%")) item.setMainstatPercent(item.getMainstatPercent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
+                        else item.setMainstat(item.getMainstat() + Integer.parseInt(potential[i+2]));
+                        continue;
+                    }
+                    else if(potential[i].equals(STATSSELECTER[subStat1Sel])){
+                        if(potential[i+2].endsWith("%")) item.setSubstat1Percent(item.getSubstat1Percent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
+                        else item.setSubstat1(item.getSubstat1() + Integer.parseInt(potential[i+2]));
+                        continue;
+                    }
+                    else if(potential[i].equals(STATSSELECTER[subStat2Sel])){
+                        if(potential[i+2].endsWith("%")) item.setSubstat2Percent(item.getSubstat2Percent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
+                        else item.setSubstat2(item.getSubstat2() + Integer.parseInt(potential[i+2]));
+                        continue;
+                    }
+                    else if(potential[i].equals(ATTSELECTER[attmagSel])){
+                        if(potential[i+2].endsWith("%")) item.setAttmagPercent(item.getAttmagPercent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
+                        else item.setAttmag(item.getAttmag() + Integer.parseInt(potential[i+2]));
+                        continue;
+                    }
+                    else if(potential[i].equals("크리티컬") && potential[i+1].equals("데미지")){
+                        item.setCritDMG(item.getCritDMG() + Integer.parseInt(StringUtils.chop(potential[i+3])));
+                        i = i+1;
+                        continue;
+                    }
+                    else if(potential[i].equals("보스") && potential[i+1].equals("몬스터")){
+                        item.setBossDMG(item.getBossDMG() + Integer.parseInt(StringUtils.chop(potential[i+6])));
+                        i = i+4;
+                        continue;
+                    }
+                    else if(potential[i].equals("몬스터") && potential[i+1].equals("방어력")){
+                        item.setPenetrate(item.getPenetrate() + Integer.parseInt(StringUtils.chop(potential[i+4])));
+                        i = i+2;
+                        continue;
+                    }
+                }
+                break;
+            }
+        }
+        return item;
     }
 
     private Document process(String url) {
