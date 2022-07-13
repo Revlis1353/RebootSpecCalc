@@ -1,6 +1,7 @@
 package com.revlis1353.rebootspec.rebootspec;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,29 +19,31 @@ public class Crawler{
     private static final String STATSSELECTER[] = {"STR", "DEX", "INT", "LUK", "Null"};
     private static final String ATTSELECTER[] = {"공격력", "마력"};
 
-    private String characterName;
+    //private String characterName;
+    private String siteUrl;
     private int mainStatSel;   //0:STR, 1:DEX, 2:INT, 3:LUK
     private int subStat1Sel;
     private int subStat2Sel; 
     private int attmagSel;     //0:ATTACK, 1:MAGIC
 
     public Crawler(String characterName){
-        this.characterName = characterName;
+        //this.characterName = characterName;
+        this.siteUrl = siteUrlBase + siteUrlRankingPrefix + characterName + siteUrlPostfix;
         this.mainStatSel = 3;
         this.subStat1Sel = 0;
         this.subStat2Sel = 1;
         this.attmagSel = 0;
     }
 
-    public void getCharacterItemData(){
-        String siteUrl = siteUrlBase + siteUrlRankingPrefix + characterName + siteUrlPostfix;
+    public ArrayList<DataItem> getCharacterItemData(){
         String characterUrl = getCharacterUrl(siteUrl);
         String equipmentUrl = getCharacterEquipmentUrl(characterUrl);
         
         Elements equipmentsTags = process(equipmentUrl).getElementsByClass("weapon_wrap").select("ul > li > span > a");
 
+        ArrayList<DataItem> equipeditem = new ArrayList<DataItem>();
         Iterator<Element> iter = equipmentsTags.iterator();
-        for(int i = 0; i < 14; i++){ //TODO: Default i = 25
+        for(int i = 0; i < 25; i++){
             Element element = (Element)iter.next();
             String elementUrl = element.attr("href");
 
@@ -52,11 +55,19 @@ public class Crawler{
             itemInfo = StringEscapeUtils.unescapeJava(itemInfo.substring(18, itemInfo.length()-2));
             Document itemDocument = Jsoup.parse(itemInfo);
 
-            getEquipment(itemDocument);
-            //TODO: Add equipment to List and send data to Character
+            equipeditem.add(getEquipment(itemDocument));
         }
+
+        return equipeditem;
     }
     
+    public int getCharacterLevel() {
+        Document document = process(siteUrl);
+        Elements urlElements = document.getElementsByClass("search_com_chk");
+        int characterLevel = Integer.parseInt(urlElements.select("td").get(2).text().substring(3));
+        return characterLevel;
+    }
+
     private String getCharacterUrl(String siteUrl){
         Document document = process(siteUrl);
         Elements urlElements = document.getElementsByClass("search_com_chk");
@@ -152,6 +163,15 @@ public class Crawler{
                         else item.setAttmag(item.getAttmag() + Integer.parseInt(potential[i+2]));
                         continue;
                     }
+                    else if(potential[i].equals("올스탯")){
+                        if(potential[i+2].endsWith("%")) item.setAllstatPercent(item.getAllstatPercent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
+                        else{
+                            item.setMainstat(item.getMainstat() + Integer.parseInt(potential[i+2]));
+                            item.setSubstat1(item.getSubstat1() + Integer.parseInt(potential[i+2]));
+                            item.setSubstat2(item.getSubstat2() + Integer.parseInt(potential[i+2]));
+                        }
+                        continue;
+                    }
                     else if(potential[i].equals("크리티컬") && potential[i+1].equals("데미지")){
                         item.setCritDMG(item.getCritDMG() + Integer.parseInt(StringUtils.chop(potential[i+3])));
                         i = i+1;
@@ -162,10 +182,13 @@ public class Crawler{
                         i = i+4;
                         continue;
                     }
-                    else if(potential[i].equals("몬스터") && potential[i+1].equals("방어력")){
-                        item.setPenetrate(item.getPenetrate() + Integer.parseInt(StringUtils.chop(potential[i+4])));
+                    else if(potential[i].equals("몬스터") && potential[i+1].equals("방어율")){
+                        item.setPenetrate(item.getPenetrate() + Integer.parseInt(StringUtils.chop(potential[i+4]))); // TODO: Change to multiply
                         i = i+2;
                         continue;
+                    }
+                    else{
+                        i = i-2;
                     }
                 }
                 break;
