@@ -16,23 +16,23 @@ public class Crawler{
     private static final String siteUrlBase = "https://maplestory.nexon.com";
     private static final String siteUrlRankingPrefix = "/Ranking/World/Total?c=";
     private static final String siteUrlPostfix = "&w=254";
-    private static final String STATSSELECTER[] = {"STR", "DEX", "INT", "LUK", "Null"};
+    private static final String STATSSELECTER[] = {"STR", "DEX", "INT", "LUK"};
     private static final String ATTSELECTER[] = {"공격력", "마력"};
 
     //private String characterName;
     private String siteUrl;
-    private int mainStatSel;   //0:STR, 1:DEX, 2:INT, 3:LUK
-    private int subStat1Sel;
-    private int subStat2Sel; 
+    private int mainstatSel;   //0:STR, 1:DEX, 2:INT, 3:LUK
+    private int substat1Sel;
+    private int substat2Sel; 
     private int attmagSel;     //0:ATTACK, 1:MAGIC
 
-    public Crawler(String characterName){
+    public Crawler(FindCharacterVO character){
         //this.characterName = characterName;
-        this.siteUrl = siteUrlBase + siteUrlRankingPrefix + characterName + siteUrlPostfix;
-        this.mainStatSel = 3;
-        this.subStat1Sel = 0;
-        this.subStat2Sel = 1;
-        this.attmagSel = 0;
+        this.siteUrl = siteUrlBase + siteUrlRankingPrefix + character.getcharacterName() + siteUrlPostfix;
+        this.mainstatSel = character.getmainstatSel();
+        this.substat1Sel = character.getsubstat1Sel();
+        this.substat2Sel = character.getsubstat2Sel();
+        this.attmagSel = character.getattmagSel();
     }
 
     public ArrayList<DataItem> getCharacterItemData(){
@@ -58,6 +58,8 @@ public class Crawler{
             equipeditem.add(getEquipment(itemDocument));
         }
 
+        //TODO: equipeditem.add(getCharacterHyperstat());
+
         return equipeditem;
     }
     
@@ -66,6 +68,11 @@ public class Crawler{
         Elements urlElements = document.getElementsByClass("search_com_chk");
         int characterLevel = Integer.parseInt(urlElements.select("td").get(2).text().substring(3));
         return characterLevel;
+    }
+
+    private DataItem getCharacterHyperstat(){
+        //TODO: get Hyper Stat
+        return null;
     }
 
     private String getCharacterUrl(String siteUrl){
@@ -96,20 +103,20 @@ public class Crawler{
         Elements Stats = itemDocument.getElementsByClass("stet_info").select("ul > li");
 
         for(Element stat : Stats){  //Find main Stats
-            if(stat.select("div > span").text().equals(STATSSELECTER[mainStatSel])){
+            if(stat.select("div > span").text().equals(STATSSELECTER[mainstatSel])){
                 item.setMainstat(Integer.parseInt(stat.getElementsByClass("point_td").text().split(" ")[0]));
                 break;
             }
         }
         for(Element stat : Stats){  //Find substat1
-            if(stat.select("div > span").text().equals(STATSSELECTER[subStat1Sel])){
+            if(stat.select("div > span").text().equals(STATSSELECTER[substat1Sel])){
                 item.setSubstat1(Integer.parseInt(stat.getElementsByClass("point_td").text().split(" ")[0]));
                 break;
             }
         }
-        if(subStat2Sel != 4){  //If subStat2 is exist
+        if(substat2Sel >= 0){  //If subStat2 is exist
             for(Element stat : Stats){  //Find substat2
-                if(stat.select("div > span").text().equals(STATSSELECTER[subStat2Sel])){
+                if(stat.select("div > span").text().equals(STATSSELECTER[substat2Sel])){
                     item.setSubstat2(Integer.parseInt(stat.getElementsByClass("point_td").text().split(" ")[0]));
                     break;
                 }
@@ -143,17 +150,17 @@ public class Crawler{
             if(stat.select("div > span").text().split(" ")[0].equals("잠재옵션")){
                 String potential[] = stat.getElementsByClass("point_td").text().split(" ");
                 for(int i = 0; i < potential.length; i = i+3){
-                    if(potential[i].equals(STATSSELECTER[mainStatSel])){
+                    if(potential[i].equals(STATSSELECTER[mainstatSel])){
                         if(potential[i+2].endsWith("%")) item.setMainstatPercent(item.getMainstatPercent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
                         else item.setMainstat(item.getMainstat() + Integer.parseInt(potential[i+2]));
                         continue;
                     }
-                    else if(potential[i].equals(STATSSELECTER[subStat1Sel])){
+                    else if(potential[i].equals(STATSSELECTER[substat1Sel])){
                         if(potential[i+2].endsWith("%")) item.setSubstat1Percent(item.getSubstat1Percent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
                         else item.setSubstat1(item.getSubstat1() + Integer.parseInt(potential[i+2]));
                         continue;
                     }
-                    else if(potential[i].equals(STATSSELECTER[subStat2Sel])){
+                    else if(substat2Sel >= 0 & potential[i].equals(STATSSELECTER[substat2Sel])){
                         if(potential[i+2].endsWith("%")) item.setSubstat2Percent(item.getSubstat2Percent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
                         else item.setSubstat2(item.getSubstat2() + Integer.parseInt(potential[i+2]));
                         continue;
