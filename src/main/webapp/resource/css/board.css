@@ -87,3 +87,27 @@ select{
     color: red;
     font-size: 12px;
 }
+
+tr{
+    height: 50px;
+}
+
+td{
+    width: 50px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.itemTable{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.items{
+    visibility: hidden;
+    display: none;
+}
+
+#itemDescription{
+    display:block;
+}

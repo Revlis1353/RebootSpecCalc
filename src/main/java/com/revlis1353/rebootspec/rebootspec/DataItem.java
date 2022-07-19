@@ -1,5 +1,8 @@
 package com.revlis1353.rebootspec.rebootspec;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class DataItem{
     private String itemName, itemImg;
     private int reqLev;
@@ -7,7 +10,8 @@ public class DataItem{
     private int mainstatPercent, substat1Percent, substat2Percent;
     private int allstatPercent;
     private int attmag, attmagPercent;
-    private int critDMG, bossDMG, penetrate;
+    private int critDMG, bossDMG;
+    private float penetrate;
 
     public DataItem(){
     }
@@ -54,7 +58,7 @@ public class DataItem{
     public int getBossDMG() {
         return bossDMG;
     }
-    public int getPenetrate() {
+    public float getPenetrate() {
         return penetrate;
     }
 
@@ -85,7 +89,7 @@ public class DataItem{
     public void setMainstatPercent(int mainstatPercent) {
         this.mainstatPercent = mainstatPercent;
     }
-    public void setPenetrate(int penetrate) {
+    public void setPenetrate(float penetrate) {
         this.penetrate = penetrate;
     }
     public void setReqLev(int reqLev) {

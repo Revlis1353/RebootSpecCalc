@@ -26,6 +26,9 @@ public class Crawler{
     private int substat2Sel; 
     private int attmagSel;     //0:ATTACK, 1:MAGIC
 
+    //TODO: Expected Bug) If some equipment are empty, ~
+
+
     public Crawler(FindCharacterVO character){
         //this.characterName = characterName;
         this.siteUrl = siteUrlBase + siteUrlRankingPrefix + character.getcharacterName() + siteUrlPostfix;
@@ -39,8 +42,10 @@ public class Crawler{
         String characterUrl = getCharacterUrl(siteUrl);
         String equipmentUrl = getCharacterEquipmentUrl(characterUrl);
         
+        //Get url of each equipments
         Elements equipmentsTags = process(equipmentUrl).getElementsByClass("weapon_wrap").select("ul > li > span > a");
 
+        //Get data from each equipments
         ArrayList<DataItem> equipeditem = new ArrayList<DataItem>();
         Iterator<Element> iter = equipmentsTags.iterator();
         for(int i = 0; i < 25; i++){
@@ -59,6 +64,7 @@ public class Crawler{
         }
 
         //TODO: equipeditem.add(getCharacterHyperstat());
+        //TODO: Crawl arcane symbol data 
 
         return equipeditem;
     }
@@ -98,6 +104,7 @@ public class Crawler{
         DataItem item = new DataItem();
 
         item.setItemName(itemDocument.getElementsByClass("item_memo_title").text());
+        item.setItemImg(itemDocument.getElementsByClass("item_img").select("img").attr("src"));
         item.setReqLev(Integer.parseInt(itemDocument.getElementsByClass("ablilty01").select("ul > li > em").text().split(" ")[0]));
         
         Elements Stats = itemDocument.getElementsByClass("stet_info").select("ul > li");
@@ -190,7 +197,7 @@ public class Crawler{
                         continue;
                     }
                     else if(potential[i].equals("몬스터") && potential[i+1].equals("방어율")){
-                        item.setPenetrate(item.getPenetrate() + Integer.parseInt(StringUtils.chop(potential[i+4]))); // TODO: Change to multiply
+                        item.setPenetrate((10000 - (100 - item.getPenetrate()) * (100 - Integer.parseInt(StringUtils.chop(potential[i+4])))) / 100.0f);
                         i = i+2;
                         continue;
                     }

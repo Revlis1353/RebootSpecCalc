@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -76,9 +77,16 @@ public class WebController {
 
     @RequestMapping("/spec")
     public String spec(@ModelAttribute("character") Character player, Model model){
-        //TODO: player에 null값 존재 시(새로고침) index로 이동 혹은 search 다시 수행
+        if(player == null)
+            return "redirect:index";
         model.addAttribute("player", player);
         System.out.println(player.getAttmag());
+        return "spec";
+    }
+
+    @RequestMapping("/spec/{id}")
+    public String loadItem(@PathVariable String id, Model model) {
+        //TODO: Load csv file and show data to user
         return "spec";
     }
 }

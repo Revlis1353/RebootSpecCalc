@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import org.springframework.stereotype.Component;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Component("Character")
 public class Character {
     
@@ -13,6 +16,7 @@ public class Character {
         Shoes, Android, Heart
     };
 
+    @Getter @Setter
     private ArrayList<DataItem> equipeditem;
     private String characterName;
     private int mainstat;
