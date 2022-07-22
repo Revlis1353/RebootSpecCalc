@@ -29,13 +29,18 @@
                 contentType: 'application/json',
                 data: JSON.stringify(datatoSend),
                 success: function(data){
-                    items = data;
-                    var itemhtml = "<option value='-1' selected>아이템을 선택해주세요</option>";
-                    for(var index = 0; index < data.length; index++){
-                        itemhtml += "<option value= '" + index +"'>"+ data[index].itemName + "</option>";
+                    if(data == null || data.length == 0){
+                        var itemhtml = "<option value='-1' selected>아래 스탯을 입력해주세요</option>";
+                        document.getElementById("selectItem").innerHTML = itemhtml;
                     }
-                    document.getElementById("selectItem").innerHTML = itemhtml;
-
+                    else{
+                        items = data;
+                        var itemhtml = "<option value='-1' selected>아이템을 선택해주세요</option>";
+                        for(var index = 0; index < data.length; index++){
+                            itemhtml += "<option value= '" + index +"'>"+ data[index].itemName + "</option>";
+                        }
+                        document.getElementById("selectItem").innerHTML = itemhtml;
+                    }
                     var div1 = document.getElementById("bannerFull");
                     div1.style.visibility = "visible";
                 },
@@ -48,9 +53,18 @@
         function modifyCancel(){
             var div1 = document.getElementById("bannerFull");
             div1.style.visibility = "hidden";
+            
+            //Reset
+            items = null;
+            document.getElementById("mainstat").innerText = 0;
+            document.getElementById("substat1").innerText = 0;
         }
 
         function dynamicStats(){
+            if(items == null || items.length == 0){
+                document.getElementById("mainstat").innerText = test;
+                //...
+            }
             var selectVal = $('#selectItem').val();
             if(selectVal < 0) return;
             console.log("Select Changed!: " + selectVal);

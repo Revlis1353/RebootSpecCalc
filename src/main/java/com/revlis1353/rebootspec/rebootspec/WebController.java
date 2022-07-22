@@ -2,17 +2,14 @@ package com.revlis1353.rebootspec.rebootspec;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -74,15 +71,13 @@ public class WebController {
     @PostMapping("/search")
     public String search(@ModelAttribute("FindCharacterVO") @Valid FindCharacterVO charVO, BindingResult result, RedirectAttributes redirectAttributes){
         new CharacterValidator().validate(charVO, result);
-        if(result.hasErrors())
-            return "index";
-        System.out.println(charVO.getcharacterName());
+        if(result.hasErrors()) return "index";
+
         Crawler crawler = new Crawler(charVO);
         Character player = new Character(charVO.getcharacterName(), crawler.getCharacterLevel(), crawler.getCharacterItemData());
         //index에서 form을 전달받아 characterName을 Crawler로 전달, 아이템 데이터를 받는다.
         //아이템 데이터를 정리하여 Character Data 객체에 저장 후 출력
         player.calculateSpec();
-        player.print();
         redirectAttributes.addFlashAttribute("character", player);
         return "redirect:spec";
     }
@@ -92,7 +87,6 @@ public class WebController {
         if(player == null)
             return "redirect:index";
         model.addAttribute("player", player);
-        System.out.println(player.getAttmag());
         return "spec";
     }
 
@@ -100,8 +94,16 @@ public class WebController {
     @RequestMapping("/spec/modify")
     public List<DataItem> loadItem(@RequestBody Map<String, Object> data, Model model) {
 
-        String target = "csv/" + (String)data.get("index") + ".csv";
-        ClassPathResource path = new ClassPathResource(target);
+        String target = (String)data.get("index");
+        if(target.equals("3") || target.equals("7") || target.equals("12"))
+            target = "0";
+        else if(target.equals("8"))
+            target = "4";
+        else if(target.equals("11") || target.equals("23"))
+            return null;
+
+        String targetFile = "csv/" + target + ".csv";
+        ClassPathResource path = new ClassPathResource(targetFile);
         List<DataItem> items = null;
 
         try {
