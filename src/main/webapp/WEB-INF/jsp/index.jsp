@@ -6,18 +6,26 @@
     <link rel="stylesheet" href="resource/css/board.css" type="text/css">
     <script>
         function ShowBanner(){
-            var div1 = document.getElementById("fullBanner");
+            var div1 = document.getElementById("bannerFull");
             div1.style.visibility = "visible";
+        }
+        function HideBanner(){
+            var div1 = document.getElementById("bannerFull");
+            div1.style.visibility = "hidden"; 
+            location.reload();
         }
     </script>
     <title></title>
 </head>
 
 <body>
-    <div id="fullBanner">
-        <div id="searchingBanner">
+    <div id="bannerFull">
+        <div id="bannerBackground">
             <div id="bannerBox">
                 <h1 id="bannerText">검색중입니다</h1>
+                <div id="searchCancel" onclick="HideBanner();">
+                    <p id="searchCancelText">취소</p>
+                </div>
             </div>  
         </div>
     </div>

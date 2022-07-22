@@ -1,21 +1,33 @@
 package com.revlis1353.rebootspec.rebootspec;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.opencsv.bean.CsvToBeanBuilder;
 
 @Controller
 public class WebController {
@@ -84,9 +96,30 @@ public class WebController {
         return "spec";
     }
 
-    @RequestMapping("/spec/{id}")
-    public String loadItem(@PathVariable String id, Model model) {
-        //TODO: Load csv file and show data to user
-        return "spec";
+    @ResponseBody
+    @RequestMapping("/spec/modify")
+    public List<DataItem> loadItem(@RequestBody Map<String, Object> data, Model model) {
+
+        String target = "csv/" + (String)data.get("index") + ".csv";
+        ClassPathResource path = new ClassPathResource(target);
+        List<DataItem> items = null;
+
+        try {
+            items = new CsvToBeanBuilder<DataItem>(new InputStreamReader(new FileInputStream(path.getFile().getAbsolutePath()), "utf-8"))
+            .withType(DataItem.class)
+            .build()
+            .parse();
+            
+            model.addAttribute("items", items);
+
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return items;
     }
 }

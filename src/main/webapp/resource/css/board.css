@@ -29,7 +29,7 @@
     margin-top: 20px;
 }
 
-#fullBanner{
+#bannerFull{
     width: 100%;
     height: 100%;
     position: fixed;
@@ -38,26 +38,49 @@
     background-color: transparent;
 }
 
-#searchingBanner{
+#bannerBackground{
     display: table;
     background-color: rgba(0, 0, 0, 0.75);
     width: 100%;
     height: 100%;
     position: absolute;
     margin: 0 auto;
+    text-align: center;
+}
+
+#searchCancel{
+    margin-top: 10px;
+    text-align: right;
+}
+
+#searchCancelText{
+    color:white;
+    text-decoration: underline;
 }
 
 #bannerBox{
-    display: table-cell;
-    width: 300px;
+    position: absolute;
+    width: 200px;
     height: 200px;
-    outline: black solid 2px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -40%);
     text-align: center;
-    vertical-align: middle;
 }
 
 #bannerText{
     color: white;
+}
+
+#bannerModify{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50% -30%);
+    background-color: white;
+    border-radius: 10px;
+    width: 300px;
+    height: 500px;
 }
 
 *{

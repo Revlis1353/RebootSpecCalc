@@ -105,6 +105,7 @@ public class Crawler{
 
         item.setItemName(itemDocument.getElementsByClass("item_memo_title").text());
         item.setItemImg(itemDocument.getElementsByClass("item_img").select("img").attr("src"));
+        //TODO: Bug - If not select secondary substat, error occur below line.
         item.setReqLev(Integer.parseInt(itemDocument.getElementsByClass("ablilty01").select("ul > li > em").text().split(" ")[0]));
         
         Elements Stats = itemDocument.getElementsByClass("stet_info").select("ul > li");
@@ -208,6 +209,7 @@ public class Crawler{
                 break;
             }
         }
+        //TODO: Add item set attribute
         return item;
     }
 
