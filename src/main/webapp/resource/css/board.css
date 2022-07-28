@@ -111,19 +111,20 @@ select{
     font-size: 12px;
 }
 
-tr{
-    height: 50px;
-}
-
-td{
-    width: 50px;
+td.itemTable{
     text-align: center;
     vertical-align: middle;
+}
+
+.itemDescripterOuter{
+    margin-left: 30px;
 }
 
 .itemTable{
     border: 1px solid black;
     border-collapse: collapse;
+    width: 75px;
+    height: 75px;
 }
 
 .items{
@@ -133,4 +134,55 @@ td{
 
 #itemDescription{
     display:block;
+}
+
+.navi{
+    width: 200px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    float: left;
+    display: block;
+}
+
+#mainContent{
+    margin-left: 210px;
+}
+
+.navFormSelect{
+    width: 180px;
+}
+
+#navBtnSearch{
+    width: 100px;
+}
+
+#navCharacterName{
+    width: 180px;
+}
+
+.navFormSelect select{
+    width: 180px;
+}
+
+#navfindForm{
+    display: none;
+    visibility: hidden;
+}
+
+.navibutton{
+    box-sizing: inherit;
+    cursor : pointer;
+}
+
+.navibutton:hover{
+    background-color: orange;
+}
+
+.errormsg{
+    display: none;
+    visibility: hidden;
+    color: red;
+    font-size: 12px;
 }

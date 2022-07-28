@@ -20,28 +20,30 @@ public class Crawler{
     private static final String ATTSELECTER[] = {"공격력", "마력"};
 
     //private String characterName;
-    private String siteUrl;
     private int mainstatSel;   //0:STR, 1:DEX, 2:INT, 3:LUK
     private int substat1Sel;
     private int substat2Sel; 
     private int attmagSel;     //0:ATTACK, 1:MAGIC
+
+    private String siteUrl;
+    private String characterUrl;
+    private String equipmentUrl;
 
     //TODO: Expected Bug) If some equipment are empty, ~
 
 
     public Crawler(FindCharacterVO character){
         //this.characterName = characterName;
-        this.siteUrl = siteUrlBase + siteUrlRankingPrefix + character.getcharacterName() + siteUrlPostfix;
         this.mainstatSel = character.getmainstatSel();
         this.substat1Sel = character.getsubstat1Sel();
         this.substat2Sel = character.getsubstat2Sel();
         this.attmagSel = character.getattmagSel();
+        this.siteUrl = siteUrlBase + siteUrlRankingPrefix + character.getcharacterName() + siteUrlPostfix;
+        characterUrl = getCharacterUrl(siteUrl);
+        equipmentUrl = getCharacterEquipmentUrl(characterUrl);
     }
 
-    public ArrayList<DataItem> getCharacterItemData(){
-        String characterUrl = getCharacterUrl(siteUrl);
-        String equipmentUrl = getCharacterEquipmentUrl(characterUrl);
-        
+    public ArrayList<DataItem> getCharacterItemData(){        
         //Get url of each equipments
         Elements equipmentsTags = process(equipmentUrl).getElementsByClass("weapon_wrap").select("ul > li > span > a");
 
@@ -79,6 +81,12 @@ public class Crawler{
     private DataItem getCharacterHyperstat(){
         //TODO: get Hyper Stat
         return null;
+    }
+
+    public String getCharacterImgUrl(){
+        Document document = process(characterUrl);
+        String charImgUrl = document.getElementsByClass("char_img").select("div > img").attr("src");
+        return charImgUrl;
     }
 
     private String getCharacterUrl(String siteUrl){

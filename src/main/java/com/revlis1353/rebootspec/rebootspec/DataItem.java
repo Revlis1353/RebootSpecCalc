@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Component
 public class DataItem{
+    private int modifyIndex;    //For modifyItem function
     @CsvBindByName
     private String itemName;
     @CsvBindByName
@@ -39,4 +40,5 @@ public class DataItem{
     private float penetrate;
     @CsvBindByName
     private float set;
+    private int starforce;
 }

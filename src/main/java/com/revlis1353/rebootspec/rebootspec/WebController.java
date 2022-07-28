@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.context.MessageSource;
@@ -22,11 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 
 @Controller
+@SessionAttributes("player")
 public class WebController {
 
     @ModelAttribute("statSel")
@@ -69,24 +72,29 @@ public class WebController {
     }
 
     @PostMapping("/search")
-    public String search(@ModelAttribute("FindCharacterVO") @Valid FindCharacterVO charVO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String search(@ModelAttribute("FindCharacterVO") @Valid FindCharacterVO charVO, BindingResult result, RedirectAttributes redirectAttributes, Model model){
         new CharacterValidator().validate(charVO, result);
         if(result.hasErrors()) return "index";
 
         Crawler crawler = new Crawler(charVO);
-        Character player = new Character(charVO.getcharacterName(), crawler.getCharacterLevel(), crawler.getCharacterItemData());
+        Character player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
+        player.setCharacterImgUrl(crawler.getCharacterImgUrl());
+
         //index에서 form을 전달받아 characterName을 Crawler로 전달, 아이템 데이터를 받는다.
         //아이템 데이터를 정리하여 Character Data 객체에 저장 후 출력
         player.calculateSpec();
-        redirectAttributes.addFlashAttribute("character", player);
+        model.addAttribute("player", player);
         return "redirect:spec";
     }
 
     @RequestMapping("/spec")
-    public String spec(@ModelAttribute("character") Character player, Model model){
+    public String spec(@ModelAttribute("player") Character player, Model model){
         if(player == null)
             return "redirect:index";
-        model.addAttribute("player", player);
+        //Character playertest = (Character)model.getAttribute("playertest");
+        //System.out.println(playertest.getAttmag());
+        model.addAttribute("FindCharacterVO", new FindCharacterVO());
+        //model.addAttribute("player", player);
         return "spec";
     }
 
@@ -113,7 +121,6 @@ public class WebController {
             .parse();
             
             model.addAttribute("items", items);
-
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -124,4 +131,16 @@ public class WebController {
 
         return items;
     }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyConfirm")
+    public int modifyItem(@RequestBody DataItem data, BindingResult result, Model model) {
+        Character player = (Character)model.getAttribute("player");
+        player.modifyItem(data);
+        System.out.println("mainstat: " + data.getMainstat());
+        System.out.println("Attmag: " + data.getAttmag());
+        System.out.println("Player's Attmag: " + player.getAttmag());
+        return 0;
+    }
+
 }
