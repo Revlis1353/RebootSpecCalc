@@ -111,12 +111,47 @@ public class Crawler{
 
         DataItem item = new DataItem();
 
-        item.setItemName(itemDocument.getElementsByClass("item_memo_title").text());
+        String itemName = itemDocument.getElementsByClass("item_memo_title").text();
+        item.setItemName(itemName);
         item.setItemImg(itemDocument.getElementsByClass("item_img").select("img").attr("src"));
         //TODO: Bug - If not select secondary substat, error occur below line.
         item.setReqLev(Integer.parseInt(itemDocument.getElementsByClass("ablilty01").select("ul > li > em").text().split(" ")[0]));
         
         Elements Stats = itemDocument.getElementsByClass("stet_info").select("ul > li");
+
+        //Find set
+        String itemNameSplited = itemName.split(" ")[0];
+        if(itemNameSplited.equals("아쿠아틱") || itemNameSplited.equals("블랙빈") || itemNameSplited.equals("파풀라투스") || 
+        itemNameSplited.equals("응축된") || itemNameSplited.equals("골든") || itemNameSplited.equals("분노한") || 
+        itemNameSplited.equals("혼테일의") || itemNameSplited.equals("카오스") || itemNameSplited.equals("매커네이터") || 
+        itemNameSplited.equals("도미네이터") || itemNameSplited.equals("데아") || itemNameSplited.equals("지옥의")
+        || itemNameSplited.equals("실버블라썸") || itemNameSplited.equals("고귀한") || itemNameSplited.equals("가디언")
+        || itemNameSplited.equals("크리스탈") || itemNameSplited.equals("핑크빛") || itemNameSplited.equals("영생의")){
+            item.setSet(1);
+        }
+        else if(itemNameSplited.equals("로얄")){
+            if(itemName.split(" ")[1].equals("블랙메탈")){
+                item.setSet(1);
+            }
+        }
+        else if(itemNameSplited.equals("트와일라이트") || itemNameSplited.equals("에스텔라") || itemNameSplited.equals("데이브레이크") ||
+        itemNameSplited.equals("여명의")){
+            item.setSet(2);
+        }
+        else if(itemNameSplited.equals("블랙") || itemNameSplited.equals("몽환의") || itemNameSplited.equals("루즈") || 
+        itemNameSplited.equals("마력이") || itemNameSplited.equals("저주받은") || itemNameSplited.equals("고통의") || 
+        itemNameSplited.equals("창세의") || itemNameSplited.equals("거대한") || itemNameSplited.equals("커맨더") || itemNameSplited.equals("미트라의")){
+            item.setSet(3);
+        }
+        else if(itemNameSplited.equals("하이네스") || itemNameSplited.equals("이글아이") || itemNameSplited.equals("트릭스터") || itemNameSplited.equals("파프니르")){
+            item.setSet(4);
+        }
+        else if(itemNameSplited.equals("앱솔랩스")){
+            item.setSet(5);
+        }
+        else if(itemNameSplited.equals("아케인셰이드")){
+            item.setSet(6);
+        }
 
         for(Element stat : Stats){  //Find main Stats
             if(stat.select("div > span").text().equals(STATSSELECTER[mainstatSel])){
@@ -217,7 +252,6 @@ public class Crawler{
                 break;
             }
         }
-        //TODO: Add item set attribute
         return item;
     }
 

@@ -39,22 +39,22 @@
                 <form:errors path="characterName" class="error"/>
             </div>
             <div id="formSelect">
-                <form:select path="attmagSel">
+                <form:select path="attmagSel" class="indexStatSelector">
                     <form:option value="0" label="공/마 선택"/>
                     <form:options items="${attmagSel}"/>
                 </form:select>
                 <form:errors path="attmagSel" class="error"/>
-                <form:select path="mainstatSel">
+                <form:select path="mainstatSel" class="indexStatSelector">
                     <form:option value="0" label="주스탯 선택"/>
                     <form:options items="${statSel}"/>
                 </form:select>
                 <form:errors path="mainstatSel" class="error"/>
-                <form:select path="substat1Sel">
+                <form:select path="substat1Sel" class="indexStatSelector">
                     <form:option value="0" label="부스탯 선택"/>
                     <form:options items="${statSel}"/>
                 </form:select>
                 <form:errors path="substat1Sel" class="error"/>
-                <form:select path="substat2Sel">
+                <form:select path="substat2Sel" class="indexStatSelector">
                     <form:option value="0" label="추가 부스탯 선택"/>
                     <form:options items="${statSel}"/>
                 </form:select>

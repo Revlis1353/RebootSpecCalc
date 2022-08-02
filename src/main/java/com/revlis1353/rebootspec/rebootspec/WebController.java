@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.context.MessageSource;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 
@@ -72,7 +70,7 @@ public class WebController {
     }
 
     @PostMapping("/search")
-    public String search(@ModelAttribute("FindCharacterVO") @Valid FindCharacterVO charVO, BindingResult result, RedirectAttributes redirectAttributes, Model model){
+    public String search(@ModelAttribute("FindCharacterVO") @Valid FindCharacterVO charVO, BindingResult result, Model model){
         new CharacterValidator().validate(charVO, result);
         if(result.hasErrors()) return "index";
 
@@ -91,10 +89,7 @@ public class WebController {
     public String spec(@ModelAttribute("player") Character player, Model model){
         if(player == null)
             return "redirect:index";
-        //Character playertest = (Character)model.getAttribute("playertest");
-        //System.out.println(playertest.getAttmag());
         model.addAttribute("FindCharacterVO", new FindCharacterVO());
-        //model.addAttribute("player", player);
         return "spec";
     }
 
@@ -136,11 +131,12 @@ public class WebController {
     @RequestMapping("/spec/modifyConfirm")
     public int modifyItem(@RequestBody DataItem data, BindingResult result, Model model) {
         Character player = (Character)model.getAttribute("player");
+        data.applyStarforce();
         player.modifyItem(data);
         System.out.println("mainstat: " + data.getMainstat());
-        System.out.println("Attmag: " + data.getAttmag());
+        System.out.println("mainstatPercent: " + data.getMainstatPercent());
+        System.out.println("Penetrate: " + data.getPenetrate());
         System.out.println("Player's Attmag: " + player.getAttmag());
         return 0;
     }
-
 }

@@ -50,6 +50,28 @@
                     alert("err");
                 }
             });
+
+            var options = "";
+            options += "<option value=\"trashval\">없음</option>"
+            options += "<option value=\"mainstatPercent\">${player.STATSSELECTER[player.mainstatSel]}%</option>"
+            options += "<option value=\"substat1Percent\">${player.STATSSELECTER[player.substat1Sel]}%</option>"
+            options += "<option value=\"substat2Percent\">${player.STATSSELECTER[player.substat2Sel]}%</option>"
+            options += "<option value=\"allstatPercent\">올스탯%</option>";
+            if(modifyIndex == 2 || modifyIndex == 13 || modifyIndex == 16){
+                options += "<option value=\"attmagPercent\">${player.ATTSELECTER[player.attmagSel]}%</option>";
+                options += "<option value=\"penetrate\">몬스터 방어율 무시</option>";
+                options += "<option value=\"dmg\">데미지%</option>";
+                if(modifyIndex != 2){
+                    options += "<option value=\"bossDMG\">보스 공격시 데미지</option>";
+                }
+            }
+            else if(modifyIndex == 20){
+                options += "<option value=\"critDMG\">크리티컬 데미지</option>";
+            }
+            var selectBoxes = document.getElementsByClassName("modifyPotential");
+            for(var count = 0; count < selectBoxes.length; count++){
+                selectBoxes[count].innerHTML = options;
+            }
         }
 
         function modifyCancel(){
@@ -67,7 +89,28 @@
             var substat1 = Number(document.getElementById("substat1").innerText) + Number($("#modifySubstat1").val());
             var substat2 = Number(document.getElementById("substat2").innerText) + Number($("#modifySubstat2").val());
             var attmag = Number(document.getElementById("attmag").innerText) + Number($("#modifyAttmag").val());
-            var datatoSend = {"modifyIndex": modifyIndex, "mainstat": mainstat, "substat1": substat1, "substat2": substat2, "attmag": attmag};
+            var pureattmag = Number(document.getElementById("attmag").innerText);
+            var allstatPercent = Number($("#modifyallstatPercent").val());
+            var reqLev = items[parseInt($('#selectItem').val())].reqLev;
+            var starforce = Number($("#modifyStarforce").val());
+
+            var datatoSend = {"modifyIndex": modifyIndex, "mainstat": mainstat, "substat1": substat1, "substat2": substat2,
+                             "attmag": attmag, "allstatPercent": allstatPercent, "penetrate": 0, "pureattmag": pureattmag, "reqLev": reqLev, "starforce": starforce};
+            
+            for(var i = 0; i < 3; i++){
+                var potentialData = $('#modifyPotential' + i).val();
+                var potentialValue = Number($("#modifyPotentialInput" + i).val());
+
+                if(potentialData == "penetrate"){
+                    datatoSend[potentialData] = (10000 - (100 - datatoSend[potentialData]) * (100 - potentialValue)) / 100.0;
+                }
+                else if(potentialData in datatoSend){
+                    datatoSend[potentialData] += potentialValue;
+                }
+                else{
+                    datatoSend[potentialData] = potentialValue;
+                }
+            }
 
             $.ajax({
                 url: "/spec/modifyConfirm",
@@ -95,6 +138,8 @@
             console.log("Select Changed!: " + selectVal);
             document.getElementById("mainstat").innerText = items[parseInt(selectVal)].mainstat;
             document.getElementById("substat1").innerText = items[parseInt(selectVal)].substat1;
+            document.getElementById("substat2").innerText = items[parseInt(selectVal)].substat2;
+            document.getElementById("attmag").innerText = items[parseInt(selectVal)].attmag;
         }
 
         function navibtn1(){
@@ -160,15 +205,32 @@
     <div id="bannerFull">
         <div id="bannerBackground">
             <div id="bannerModify">
-                <p id="test">Test Message</p>
                 <select id="selectItem" onchange="dynamicStats();">
                 </select>
                 <div>    기본스탯               추가옵션</div>
                 <div><span>스타포스: </span><input type="number" id="modifyStarforce"></div>
-                <div><span>주스탯: </span><span id="mainstat"></span>+<input type="number" id="modifyMainstat"></div>
-                <div><span>부스탯1: </span><span id="substat1"></span>+<input type="number" id="modifySubstat1"></div>
-                <div><span>부스탯2: </span><span id="substat2"></span>+<input type="number" id="modifySubstat2"></div>
-                <div><span>공/마: </span><span id="attmag"></span>+<input type="number" id="modifyAttmag"></div>
+                <div><span>${player.STATSSELECTER[player.mainstatSel]}: </span><span id="mainstat">0</span> + <input type="number" id="modifyMainstat"></div>
+                <div><span>${player.STATSSELECTER[player.substat1Sel]}: </span><span id="substat1">0</span> + <input type="number" id="modifySubstat1"></div>
+                <div><span>${player.STATSSELECTER[player.substat2Sel]}: </span><span id="substat2">0</span> + <input type="number" id="modifySubstat2"></div>
+                <div><span>${player.ATTSELECTER[player.attmagSel]}: </span><span id="attmag">0</span> + <input type="number" id="modifyAttmag"></div>
+                <div><span>올스탯%: </span><input type="number" id="modifyallstatPercent"></div>
+                <hr>
+                <div>잠재능력</div>
+                <table>
+                    <tr>
+                        <c:forEach begin="0" end="2" var="count" varStatus="status">
+                        </tr><tr>
+                            <div>
+                                <td>
+                                    <select class="modifyPotential" id="modifyPotential${count}"></select>
+                                </td>
+                                <td>
+                                    <input type="number" id="modifyPotentialInput${count}">
+                                </td>
+                            </div>
+                        </c:forEach>
+                    </tr>
+                </table>
                 <div>
                     <button onclick="modifyConfirm();">apply</button>
                     <button onclick="modifyCancel();">cancel</button>
@@ -224,9 +286,21 @@
                         <td>
                             <div class="characterSpec">
                                 <p>캐릭터명: ${player.characterName}</p>
-                                <p>순수 주스탯: ${player.mainstat}, 순수 부스탯1: ${player.substat1}, 순수 부스탯2: ${player.substat2}</p>
-                                <p>주스탯%: ${player.mainstatPercent}, 부스탯1%: ${player.substat1Percent}, 부스탯2%: ${player.substat2Percent}, 올스탯%: ${player.allstatPercent}</p>
-                                <p>공마: ${player.attmag}, 공마%: ${player.attmagPercent}</p>
+                                <table id="playerSpecTable">
+                                    <tr>
+                                        <td>순수 ${player.STATSSELECTER[player.mainstatSel]}: ${player.mainstat}</td><td>순수 ${player.STATSSELECTER[player.substat1Sel]}: ${player.substat1}</td><td>순수 ${player.STATSSELECTER[player.substat2Sel]}: ${player.substat2}</td>
+                                    </tr><tr>
+                                        <td>${player.STATSSELECTER[player.mainstatSel]}%: ${player.mainstatPercent}</td><td>${player.STATSSELECTER[player.substat1Sel]}%: ${player.substat1Percent}</td><td>${player.STATSSELECTER[player.substat2Sel]}%: ${player.substat2Percent}</td><td>올스탯%: ${player.allstatPercent}</td>
+                                    </tr><tr>
+                                        <td>${player.ATTSELECTER[player.attmagSel]}: ${player.attmag}</td><td>${player.ATTSELECTER[player.attmagSel]}%: ${player.attmagPercent}</td>
+                                    </tr><tr>
+                                        <td>총 ${player.STATSSELECTER[player.mainstatSel]}: ${player.totalmainstat}</td><td>총 ${player.STATSSELECTER[player.substat1Sel]}: ${player.totalsubstat1}</td><td>총 ${player.STATSSELECTER[player.substat2Sel]}: ${player.totalsubstat2}</td><td>총 ${player.ATTSELECTER[player.attmagSel]}: ${player.totalattmag}</td>
+                                    </tr><tr>
+                                        <td colspan="2">보스 몬스터 공격 시 데미지: ${player.bossDMG}%</td><td>데미지: ${player.dmg}</td>
+                                    </tr><tr>
+                                        <td colspan="2">몬스터 방어율 무시: ${player.penetrate}</td><td>크리티컬 데미지: ${player.critDMG}</td>
+                                    </tr>
+                                </table>
                             </div>
                         </td>
                     </tr>
@@ -260,15 +334,15 @@
                                 <div id="itemDescription">
                                 <p>아이템명: ${player.equipeditem[count].itemName}</p>
                                 <p>제한레벨: ${player.equipeditem[count].reqLev}</p>
-                                <p>주스탯: ${player.equipeditem[count].mainstat}</p>
-                                <p>부스탯1: ${player.equipeditem[count].substat1}</p>
-                                <p>부스탯2: ${player.equipeditem[count].substat2}</p>
-                                <p>주스탯퍼: ${player.equipeditem[count].mainstatPercent}</p>
-                                <p>부스탯1퍼: ${player.equipeditem[count].substat1Percent}</p>
-                                <p>부스탯2퍼: ${player.equipeditem[count].substat2Percent}</p>
+                                <p>${player.STATSSELECTER[player.mainstatSel]}: ${player.equipeditem[count].mainstat}</p>
+                                <p>${player.STATSSELECTER[player.substat1Sel]}: ${player.equipeditem[count].substat1}</p>
+                                <p>${player.STATSSELECTER[player.substat2Sel]}: ${player.equipeditem[count].substat2}</p>
+                                <p>${player.STATSSELECTER[player.mainstatSel]}%: ${player.equipeditem[count].mainstatPercent}</p>
+                                <p>${player.STATSSELECTER[player.substat1Sel]}%: ${player.equipeditem[count].substat1Percent}</p>
+                                <p>${player.STATSSELECTER[player.substat2Sel]}%: ${player.equipeditem[count].substat2Percent}</p>
                                 <p>올스탯퍼: ${player.equipeditem[count].allstatPercent}</p>
-                                <p>공격력/마력: ${player.equipeditem[count].attmag}</p>
-                                <p>공격력퍼/마력퍼: ${player.equipeditem[count].attmagPercent}</p>
+                                <p>${player.ATTSELECTER[player.attmagSel]}: ${player.equipeditem[count].attmag}</p>
+                                <p>${player.ATTSELECTER[player.attmagSel]}%: ${player.equipeditem[count].attmagPercent}</p>
                                 <p>크리티컬 데미지: ${player.equipeditem[count].critDMG}</p>
                                 <p>보스 몬스터 공격시 데미지: ${player.equipeditem[count].bossDMG}</p>
                                 <p>몬스터 방어율 무시: ${player.equipeditem[count].penetrate}</p>
