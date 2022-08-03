@@ -211,7 +211,7 @@ public class Crawler{
                         else item.setSubstat1(item.getSubstat1() + Integer.parseInt(potential[i+2]));
                         continue;
                     }
-                    else if(substat2Sel >= 0 & potential[i].equals(STATSSELECTER[substat2Sel])){
+                    else if(substat2Sel >= 0 && potential[i].equals(STATSSELECTER[substat2Sel])){
                         if(potential[i+2].endsWith("%")) item.setSubstat2Percent(item.getSubstat2Percent() + Integer.parseInt(StringUtils.chop(potential[i+2])));
                         else item.setSubstat2(item.getSubstat2() + Integer.parseInt(potential[i+2]));
                         continue;

@@ -288,13 +288,13 @@
                                 <p>캐릭터명: ${player.characterName}</p>
                                 <table id="playerSpecTable">
                                     <tr>
-                                        <td>순수 ${player.STATSSELECTER[player.mainstatSel]}: ${player.mainstat}</td><td>순수 ${player.STATSSELECTER[player.substat1Sel]}: ${player.substat1}</td><td>순수 ${player.STATSSELECTER[player.substat2Sel]}: ${player.substat2}</td>
+                                        <td>순수 ${player.STATSSELECTER[player.mainstatSel]}: ${player.mainstat}</td><td>순수 ${player.STATSSELECTER[player.substat1Sel]}: ${player.substat1}</td><c:if test="${player.substat2Sel >= 0}"><td>순수 ${player.STATSSELECTER[player.substat2Sel]}: ${player.substat2}</td></c:if>
                                     </tr><tr>
-                                        <td>${player.STATSSELECTER[player.mainstatSel]}%: ${player.mainstatPercent}</td><td>${player.STATSSELECTER[player.substat1Sel]}%: ${player.substat1Percent}</td><td>${player.STATSSELECTER[player.substat2Sel]}%: ${player.substat2Percent}</td><td>올스탯%: ${player.allstatPercent}</td>
+                                        <td>${player.STATSSELECTER[player.mainstatSel]}%: ${player.mainstatPercent}</td><td>${player.STATSSELECTER[player.substat1Sel]}%: ${player.substat1Percent}</td><c:if test="${player.substat2Sel >= 0}"><td>${player.STATSSELECTER[player.substat2Sel]}%: ${player.substat2Percent}</td></c:if><td>올스탯%: ${player.allstatPercent}</td>
                                     </tr><tr>
                                         <td>${player.ATTSELECTER[player.attmagSel]}: ${player.attmag}</td><td>${player.ATTSELECTER[player.attmagSel]}%: ${player.attmagPercent}</td>
                                     </tr><tr>
-                                        <td>총 ${player.STATSSELECTER[player.mainstatSel]}: ${player.totalmainstat}</td><td>총 ${player.STATSSELECTER[player.substat1Sel]}: ${player.totalsubstat1}</td><td>총 ${player.STATSSELECTER[player.substat2Sel]}: ${player.totalsubstat2}</td><td>총 ${player.ATTSELECTER[player.attmagSel]}: ${player.totalattmag}</td>
+                                        <td>총 ${player.STATSSELECTER[player.mainstatSel]}: ${player.totalmainstat}</td><td>총 ${player.STATSSELECTER[player.substat1Sel]}: ${player.totalsubstat1}</td><c:if test="${player.substat2Sel >= 0}"><td>총 ${player.STATSSELECTER[player.substat2Sel]}: ${player.totalsubstat2}</td></c:if><td>총 ${player.ATTSELECTER[player.attmagSel]}: ${player.totalattmag}</td>
                                     </tr><tr>
                                         <td colspan="2">보스 몬스터 공격 시 데미지: ${player.bossDMG}%</td><td>데미지: ${player.dmg}</td>
                                     </tr><tr>

@@ -42,7 +42,7 @@ public class FindCharacterVO{
         this.substat1Sel = substat1Sel - 1;
     }
 
-    public void setSubStat2Sel(int substat2Sel) {
+    public void setsubstat2Sel(int substat2Sel) {
         this.substat2Sel = substat2Sel - 1;
     }
 

@@ -74,6 +74,8 @@ public class WebController {
         new CharacterValidator().validate(charVO, result);
         if(result.hasErrors()) return "index";
 
+        System.out.println("1: " + charVO.getsubstat1Sel() + ", 2: " + charVO.getsubstat2Sel());
+
         Crawler crawler = new Crawler(charVO);
         Character player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
         player.setCharacterImgUrl(crawler.getCharacterImgUrl());
