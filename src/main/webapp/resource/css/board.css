@@ -1,0 +1,212 @@
+@charset "UTF-8";
+
+#formCharacter{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    text-align: center;
+}
+
+#characterName{
+    box-sizing: inherit;
+    height: 40px;
+    width: 300px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 10px;
+    border-width: 4px;
+}
+
+#btnSearch{
+    box-sizing: inherit;
+    height: 40px;
+    width: 150px;
+    font-size: 16px;
+    border-radius: 10px;
+    background-color: orange;
+    border-width: 1px;
+    margin-top: 20px;
+}
+
+#bannerFull{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    visibility: hidden;
+    z-index: 2000;
+    background-color: transparent;
+}
+
+#bannerBackground{
+    display: table;
+    background-color: rgba(0, 0, 0, 0.75);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#searchCancel{
+    margin-top: 10px;
+    text-align: right;
+}
+
+#searchCancelText{
+    color:white;
+    text-decoration: underline;
+}
+
+#bannerBox{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    text-align: center;
+}
+
+#bannerText{
+    color: white;
+}
+
+#bannerModify{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    background-color: white;
+    border-radius: 10px;
+    width: 300px;
+    height: 500px;
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+#formSelect{
+    width: 300px;
+    margin-top: 12px;
+}
+
+.indexStatSelector{
+    width: 300px;
+    height: 30px;
+    font-size: 14px;
+    border-width: 2px;
+    border-radius: 4px;
+    margin-top: 12px;
+}
+
+.errorouter{
+    text-align: left;
+}
+
+.error{
+    color: red;
+    font-size: 12px;
+}
+
+td.itemTable{
+    text-align: center;
+    vertical-align: middle;
+}
+
+#itemDescripterOuter{
+    margin-left: 200px;
+    margin-top: 100px;
+}
+
+.itemDescripterTable{
+    margin: auto;
+}
+
+.itemTable{
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 75px;
+    height: 75px;
+}
+
+.items{
+    visibility: hidden;
+    display: none;
+}
+
+#item0{
+    display: flex;
+}
+
+#itemTableOuter{
+    min-width: 400px;
+}
+
+.itemDescription{
+    display: block;
+    width: 400px;
+    margin-left: 100px;
+}
+
+.navi{
+    width: 200px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    float: left;
+    display: block;
+}
+
+#mainContent{
+    text-align: center;
+    padding-top: 100px;
+}
+
+.characterSpecInner{
+    margin: auto;
+}
+
+.navFormSelect{
+    width: 180px;
+}
+
+#navBtnSearch{
+    width: 100px;
+}
+
+#navCharacterName{
+    width: 180px;
+}
+
+.navFormSelect select{
+    width: 180px;
+}
+
+#navfindForm{
+    display: none;
+    visibility: hidden;
+}
+
+.navibutton{
+    box-sizing: inherit;
+    cursor : pointer;
+}
+
+.navibutton:hover{
+    background-color: orange;
+}
+
+.errormsg{
+    display: none;
+    visibility: hidden;
+    color: red;
+    font-size: 12px;
+}
+
+#playerSpecTable>tbody>tr>td{
+    width: 250px;
+}
