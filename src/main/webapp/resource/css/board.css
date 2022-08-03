@@ -76,7 +76,7 @@
     position: absolute;
     top: 30%;
     left: 50%;
-    transform: translate(-50% -30%);
+    transform: translate(-50%, -30%);
     background-color: white;
     border-radius: 10px;
     width: 300px;
@@ -116,13 +116,13 @@ td.itemTable{
     vertical-align: middle;
 }
 
-.itemDescripterOuter{
-    margin-left: 30px;
-    margin-top: 50px;
+#itemDescripterOuter{
+    margin-left: 200px;
+    margin-top: 100px;
 }
 
-.itemDescripterOuter>tbody>tr>td{
-    padding-right: 100px;
+.itemDescripterTable{
+    margin: auto;
 }
 
 .itemTable{
@@ -137,8 +137,18 @@ td.itemTable{
     display: none;
 }
 
-#itemDescription{
-    display:block;
+#item0{
+    display: flex;
+}
+
+#itemTableOuter{
+    min-width: 400px;
+}
+
+.itemDescription{
+    display: block;
+    width: 400px;
+    margin-left: 100px;
 }
 
 .navi{
@@ -152,7 +162,12 @@ td.itemTable{
 }
 
 #mainContent{
-    margin-left: 300px;
+    text-align: center;
+    padding-top: 100px;
+}
+
+.characterSpecInner{
+    margin: auto;
 }
 
 .navFormSelect{
@@ -193,5 +208,5 @@ td.itemTable{
 }
 
 #playerSpecTable>tbody>tr>td{
-    width: 150px;
+    width: 250px;
 }

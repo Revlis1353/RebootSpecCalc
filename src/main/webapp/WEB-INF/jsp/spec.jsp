@@ -93,8 +93,9 @@
             var allstatPercent = Number($("#modifyallstatPercent").val());
             var reqLev = items[parseInt($('#selectItem').val())].reqLev;
             var starforce = Number($("#modifyStarforce").val());
+            var itemName = items[parseInt($('#selectItem').val())].itemName;
 
-            var datatoSend = {"modifyIndex": modifyIndex, "mainstat": mainstat, "substat1": substat1, "substat2": substat2,
+            var datatoSend = {"itemName": itemName, "modifyIndex": modifyIndex, "mainstat": mainstat, "substat1": substat1, "substat2": substat2,
                              "attmag": attmag, "allstatPercent": allstatPercent, "penetrate": 0, "pureattmag": pureattmag, "reqLev": reqLev, "starforce": starforce};
             
             for(var i = 0; i < 3; i++){
@@ -276,7 +277,7 @@
     <div id="mainContent">
         <div id="mainContentInner">
             <div class="characterSpecOuter">
-                <table>
+                <table class="characterSpecInner">
                     <tr>
                         <td>
                             <div class="characterImg">
@@ -288,17 +289,21 @@
                                 <p>캐릭터명: ${player.characterName}</p>
                                 <table id="playerSpecTable">
                                     <tr>
-                                        <td>순수 ${player.STATSSELECTER[player.mainstatSel]}: ${player.mainstat}</td><td>순수 ${player.STATSSELECTER[player.substat1Sel]}: ${player.substat1}</td><c:if test="${player.substat2Sel >= 0}"><td>순수 ${player.STATSSELECTER[player.substat2Sel]}: ${player.substat2}</td></c:if>
+                                        <td>순수 ${player.STATSSELECTER[player.mainstatSel]}: ${player.mainstat} → ${playerCompare.mainstat}</td><td>${player.STATSSELECTER[player.mainstatSel]}%: ${player.mainstatPercent}% → ${playerCompare.mainstatPercent}%</td><td>총 ${player.STATSSELECTER[player.mainstatSel]}: ${player.totalmainstat} → ${playerCompare.totalmainstat}</td>
                                     </tr><tr>
-                                        <td>${player.STATSSELECTER[player.mainstatSel]}%: ${player.mainstatPercent}</td><td>${player.STATSSELECTER[player.substat1Sel]}%: ${player.substat1Percent}</td><c:if test="${player.substat2Sel >= 0}"><td>${player.STATSSELECTER[player.substat2Sel]}%: ${player.substat2Percent}</td></c:if><td>올스탯%: ${player.allstatPercent}</td>
+                                        <td>순수 ${player.STATSSELECTER[player.substat1Sel]}: ${player.substat1} → ${playerCompare.substat1}</td><td>${player.STATSSELECTER[player.substat1Sel]}%: ${player.substat1Percent}% → ${playerCompare.substat1Percent}%</td><td>총 ${player.STATSSELECTER[player.substat1Sel]}: ${player.totalsubstat1} → ${playerCompare.totalsubstat1}</td>
+                                    <c:if test="${player.substat2Sel >= 0}">
+                                        </tr><tr>
+                                            <td>순수 ${player.STATSSELECTER[player.substat2Sel]}: ${player.substat2} → ${playerCompare.substat2}</td><td>${player.STATSSELECTER[player.substat2Sel]}%: ${player.substat2Percent}% → ${playerCompare.substat2Percent}%</td><td>총 ${player.STATSSELECTER[player.substat2Sel]}: ${player.totalsubstat2} → ${playerCompare.totalsubstat2}</td>
+                                    </c:if>
                                     </tr><tr>
-                                        <td>${player.ATTSELECTER[player.attmagSel]}: ${player.attmag}</td><td>${player.ATTSELECTER[player.attmagSel]}%: ${player.attmagPercent}</td>
+                                        <td></td><td>올스탯%: ${player.allstatPercent}% → ${playerCompare.allstatPercent}%</td>
                                     </tr><tr>
-                                        <td>총 ${player.STATSSELECTER[player.mainstatSel]}: ${player.totalmainstat}</td><td>총 ${player.STATSSELECTER[player.substat1Sel]}: ${player.totalsubstat1}</td><c:if test="${player.substat2Sel >= 0}"><td>총 ${player.STATSSELECTER[player.substat2Sel]}: ${player.totalsubstat2}</td></c:if><td>총 ${player.ATTSELECTER[player.attmagSel]}: ${player.totalattmag}</td>
+                                        <td>${player.ATTSELECTER[player.attmagSel]}: ${player.attmag} → ${playerCompare.attmag}</td><td>${player.ATTSELECTER[player.attmagSel]}%: ${player.attmagPercent}% → ${playerCompare.attmagPercent}%</td><td>총 ${player.ATTSELECTER[player.attmagSel]}: ${player.totalattmag} → ${playerCompare.totalattmag}</td>
                                     </tr><tr>
-                                        <td colspan="2">보스 몬스터 공격 시 데미지: ${player.bossDMG}%</td><td>데미지: ${player.dmg}</td>
+                                        <td colspan="2">보스 몬스터 공격 시 데미지: ${player.bossDMG}% → ${playerCompare.bossDMG}%</td><td>데미지: ${player.dmg}% → ${playerCompare.dmg}%</td>
                                     </tr><tr>
-                                        <td colspan="2">몬스터 방어율 무시: ${player.penetrate}</td><td>크리티컬 데미지: ${player.critDMG}</td>
+                                        <td colspan="2">몬스터 방어율 무시: ${player.penetrate}% → ${playerCompare.penetrate}%</td><td>크리티컬 데미지: ${player.critDMG} → ${playerCompare.critDMG}%</td>
                                     </tr>
                                 </table>
                             </div>
@@ -306,10 +311,10 @@
                     </tr>
                 </table>
             </div>
-            <div>
-                <table class="itemDescripterOuter">
+            <div id="itemDescripterOuter">
+                <table class="itemDescripterTable">
                     <tr><td>
-                        <table>
+                        <table id="itemTableOuter">
                             <tr style="height:0px">
                                 <c:set var="itemIndex" value="0"/>
                                 <c:forEach begin="0" end="29" var="count" varStatus="status">
@@ -321,7 +326,7 @@
                                             <td class="itemTable"> </td>
                                         </c:when>
                                         <c:otherwise>
-                                            <td class="itemTable" onclick="clickimage('item' + '${itemIndex}');"><img src="${player.equipeditem[itemIndex].itemImg}"></td>
+                                            <td class="itemTable" onclick="clickimage('item' + '${itemIndex}');"><img src="${playerCompare.equipeditem[itemIndex].itemImg}"></td>
                                             <c:set var="itemIndex" value="${itemIndex + 1}"/>
                                         </c:otherwise>
                                     </c:choose>
@@ -331,25 +336,25 @@
                     </td><td>
                         <c:forEach begin="0" end="24" var="count" varStatus="status">
                             <div class="items" id="item${count}">
-                                <div id="itemDescription">
-                                <p>아이템명: ${player.equipeditem[count].itemName}</p>
-                                <p>제한레벨: ${player.equipeditem[count].reqLev}</p>
-                                <p>${player.STATSSELECTER[player.mainstatSel]}: ${player.equipeditem[count].mainstat}</p>
-                                <p>${player.STATSSELECTER[player.substat1Sel]}: ${player.equipeditem[count].substat1}</p>
-                                <p>${player.STATSSELECTER[player.substat2Sel]}: ${player.equipeditem[count].substat2}</p>
-                                <p>${player.STATSSELECTER[player.mainstatSel]}%: ${player.equipeditem[count].mainstatPercent}</p>
-                                <p>${player.STATSSELECTER[player.substat1Sel]}%: ${player.equipeditem[count].substat1Percent}</p>
-                                <p>${player.STATSSELECTER[player.substat2Sel]}%: ${player.equipeditem[count].substat2Percent}</p>
-                                <p>올스탯퍼: ${player.equipeditem[count].allstatPercent}</p>
-                                <p>${player.ATTSELECTER[player.attmagSel]}: ${player.equipeditem[count].attmag}</p>
-                                <p>${player.ATTSELECTER[player.attmagSel]}%: ${player.equipeditem[count].attmagPercent}</p>
-                                <p>크리티컬 데미지: ${player.equipeditem[count].critDMG}</p>
-                                <p>보스 몬스터 공격시 데미지: ${player.equipeditem[count].bossDMG}</p>
-                                <p>몬스터 방어율 무시: ${player.equipeditem[count].penetrate}</p>
-                                <button onclick="modify('${count}');">수정</button>
-                                <%-- TODO: If user modify items, these item's border color will change to red --%>
-                                <%-- TODO: If user press the button, change items image. Finally 'apply' button will recalculate stats. --%>
-                                <%-- TODO: 'Compare to previous stats' function will useful. --%>
+                                <div class="itemDescription">
+                                    <p>아이템명: ${playerCompare.equipeditem[count].itemName}</p>
+                                    <p>제한레벨: ${playerCompare.equipeditem[count].reqLev}</p>
+                                    <p>${playerCompare.STATSSELECTER[playerCompare.mainstatSel]}: ${playerCompare.equipeditem[count].mainstat}</p>
+                                    <p>${playerCompare.STATSSELECTER[playerCompare.substat1Sel]}: ${playerCompare.equipeditem[count].substat1}</p>
+                                    <c:if test="${playerCompare.substat2Sel >= 0}"><p>${playerCompare.STATSSELECTER[playerCompare.substat2Sel]}: ${playerCompare.equipeditem[count].substat2}</p></c:if>
+                                    <p>${playerCompare.STATSSELECTER[playerCompare.mainstatSel]}%: ${playerCompare.equipeditem[count].mainstatPercent}</p>
+                                    <p>${playerCompare.STATSSELECTER[playerCompare.substat1Sel]}%: ${playerCompare.equipeditem[count].substat1Percent}</p>
+                                    <c:if test="${playerCompare.substat2Sel >= 0}"><p>${playerCompare.STATSSELECTER[player.substat2Sel]}%: ${playerCompare.equipeditem[count].substat2Percent}</p></c:if>
+                                    <p>올스탯퍼: ${playerCompare.equipeditem[count].allstatPercent}</p>
+                                    <p>${playerCompare.ATTSELECTER[playerCompare.attmagSel]}: ${playerCompare.equipeditem[count].attmag}</p>
+                                    <p>${playerCompare.ATTSELECTER[playerCompare.attmagSel]}%: ${playerCompare.equipeditem[count].attmagPercent}</p>
+                                    <p>크리티컬 데미지: ${playerCompare.equipeditem[count].critDMG}</p>
+                                    <p>보스 몬스터 공격시 데미지: ${playerCompare.equipeditem[count].bossDMG}</p>
+                                    <p>몬스터 방어율 무시: ${playerCompare.equipeditem[count].penetrate}</p>
+                                    <button onclick="modify('${count}');">수정</button>
+                                    <%-- TODO: If user modify items, these item's border color will change to red --%>
+                                    <%-- TODO: If user press the button, change items image. Finally 'apply' button will recalculate stats. --%>
+                                    <%-- TODO: 'Compare to previous stats' function will useful. --%>
                                 </div>
                             </div>
                         </c:forEach>

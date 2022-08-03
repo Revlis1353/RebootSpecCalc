@@ -59,6 +59,44 @@ public class Character {
         equipeditem = new ArrayList<DataItem>();
     }
 
+    @SuppressWarnings("unchecked")
+    public Character(Character player){
+        equipeditem = (ArrayList<DataItem>)player.getEquipeditem().clone();
+
+        this.characterName = player.getCharacterName();
+        this.characterImgUrl = player.getCharacterImgUrl();
+    
+        this.basemainstat = player.getBasemainstat();
+        this.basesubstat1 = player.getBasesubstat1();
+        this.basesubstat2 = player.getBasesubstat2();
+    
+        this.mainstat = player.getMainstat();
+        this.substat1 = player.getSubstat1();
+        this.substat2 = player.getSubstat2();
+        this.mainstatPercent = player.getMainstatPercent();
+        this.substat1Percent = player.getSubstat1Percent();
+        this.substat2Percent = player.getSubstat2Percent();
+        this.allstatPercent = player.getAllstatPercent();
+        this.attmag = player.getAttmag();
+        this.attmagPercent = player.getAttmagPercent();
+        this.critDMG = player.getCritDMG();
+        this.bossDMG = player.getBossDMG();
+        this.dmg = player.getDmg();
+        this.penetrate = player.getPenetrate();
+    
+        this.mainstatSel = player.getMainstatSel();
+        this.substat1Sel = player.getSubstat1Sel();
+        this.substat2Sel = player.getSubstat2Sel();
+        this.attmagSel = player.getAttmagSel();
+    
+        this.totalmainstat = player.getTotalmainstat();
+        this.totalsubstat1 = player.getTotalsubstat1();
+        this.totalsubstat2 = player.getTotalsubstat2();
+        this.totalattmag = player.getTotalattmag();
+    
+        set = player.getSet().clone();
+    }
+
     public Character(FindCharacterVO charVO, int level, ArrayList<DataItem> equipeditem){
         this.characterName = charVO.getcharacterName();
         this.mainstatSel = charVO.getmainstatSel();

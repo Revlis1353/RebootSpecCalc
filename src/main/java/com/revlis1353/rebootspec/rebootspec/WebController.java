@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.opencsv.bean.CsvToBeanBuilder;
 
 @Controller
-@SessionAttributes("player")
+@SessionAttributes({"player", "playerCompare"})
 public class WebController {
 
     @ModelAttribute("statSel")
@@ -74,8 +74,6 @@ public class WebController {
         new CharacterValidator().validate(charVO, result);
         if(result.hasErrors()) return "index";
 
-        System.out.println("1: " + charVO.getsubstat1Sel() + ", 2: " + charVO.getsubstat2Sel());
-
         Crawler crawler = new Crawler(charVO);
         Character player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
         player.setCharacterImgUrl(crawler.getCharacterImgUrl());
@@ -84,6 +82,9 @@ public class WebController {
         //아이템 데이터를 정리하여 Character Data 객체에 저장 후 출력
         player.calculateSpec();
         model.addAttribute("player", player);
+
+        Character playerCompare = new Character(player);
+        model.addAttribute("playerCompare", playerCompare);
         return "redirect:spec";
     }
 
@@ -132,13 +133,9 @@ public class WebController {
     @ResponseBody
     @RequestMapping("/spec/modifyConfirm")
     public int modifyItem(@RequestBody DataItem data, BindingResult result, Model model) {
-        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
         data.applyStarforce();
-        player.modifyItem(data);
-        System.out.println("mainstat: " + data.getMainstat());
-        System.out.println("mainstatPercent: " + data.getMainstatPercent());
-        System.out.println("Penetrate: " + data.getPenetrate());
-        System.out.println("Player's Attmag: " + player.getAttmag());
+        playerCompare.modifyItem(data);
         return 0;
     }
 }

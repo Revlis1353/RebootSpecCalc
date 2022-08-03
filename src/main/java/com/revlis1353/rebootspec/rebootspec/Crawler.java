@@ -230,6 +230,10 @@ public class Crawler{
                         }
                         continue;
                     }
+                    else if(potential[i].equals("데미지")){
+                        item.setDmg(item.getDmg() + Integer.parseInt(StringUtils.chop(potential[i+2])));
+                        continue;
+                    }
                     else if(potential[i].equals("크리티컬") && potential[i+1].equals("데미지")){
                         item.setCritDMG(item.getCritDMG() + Integer.parseInt(StringUtils.chop(potential[i+3])));
                         i = i+1;
