@@ -1,1 +1,2 @@
-itemName, reqLev, mainstat, substat1, substat2, attmag, set
+itemName, reqLev, mainstat, substat1, substat2, attmag, set, penetrate
+이글아이(카루타), 150, 30, 30, 0, 2, 4, 5
