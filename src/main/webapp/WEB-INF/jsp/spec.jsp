@@ -51,6 +51,23 @@
                 }
             });
 
+            document.getElementById("mainstat").innerText = 0;
+            document.getElementById("substat1").innerText = 0;
+            document.getElementById("substat2").innerText = 0;
+            document.getElementById("attmag").innerText = 0;
+            document.getElementById("modifyMainstat").value = "";
+            document.getElementById("modifySubstat1").value = "";
+            document.getElementById("modifySubstat2").value = "";
+            document.getElementById("modifyAttmag").value = "";
+            document.getElementById("modifyallstatPercent").value = "";
+            document.getElementById("modifyStarforce").value = "";
+            document.getElementById("modifyPotential0").value = "";
+            document.getElementById("modifyPotential1").value = "";
+            document.getElementById("modifyPotential2").value = "";
+            document.getElementById("modifyPotentialInput0").value = "";
+            document.getElementById("modifyPotentialInput1").value = "";
+            document.getElementById("modifyPotentialInput2").value = "";
+
             var options = "";
             options += "<option value=\"trashval\">없음</option>"
             options += "<option value=\"mainstatPercent\">${player.STATSSELECTER[player.mainstatSel]}%</option>"
@@ -94,9 +111,12 @@
             var reqLev = items[parseInt($('#selectItem').val())].reqLev;
             var starforce = Number($("#modifyStarforce").val());
             var itemName = items[parseInt($('#selectItem').val())].itemName;
+            var itemImg = items[parseInt($('#selectItem').val())].itemImg;
+            var penetrate = items[parseInt($('#selectItem').val())].penetrate;
 
             var datatoSend = {"itemName": itemName, "modifyIndex": modifyIndex, "mainstat": mainstat, "substat1": substat1, "substat2": substat2,
-                             "attmag": attmag, "allstatPercent": allstatPercent, "penetrate": 0, "pureattmag": pureattmag, "reqLev": reqLev, "starforce": starforce};
+                             "attmag": attmag, "allstatPercent": allstatPercent, "penetrate": penetrate, "pureattmag": pureattmag, "reqLev": reqLev, "starforce": starforce,
+                            "itemImg": itemImg};
             
             for(var i = 0; i < 3; i++){
                 var potentialData = $('#modifyPotential' + i).val();
@@ -131,7 +151,7 @@
 
         function dynamicStats(){
             if(items == null || items.length == 0){
-                document.getElementById("mainstat").innerText = test;
+                document.getElementById("mainstat").innerText = "0";
                 //...
             }
             var selectVal = $('#selectItem').val();
@@ -208,16 +228,30 @@
             <div id="bannerModify">
                 <select id="selectItem" onchange="dynamicStats();">
                 </select>
-                <div>    기본스탯               추가옵션</div>
-                <div><span>스타포스: </span><input type="number" id="modifyStarforce"></div>
-                <div><span>${player.STATSSELECTER[player.mainstatSel]}: </span><span id="mainstat">0</span> + <input type="number" id="modifyMainstat"></div>
-                <div><span>${player.STATSSELECTER[player.substat1Sel]}: </span><span id="substat1">0</span> + <input type="number" id="modifySubstat1"></div>
-                <div><span>${player.STATSSELECTER[player.substat2Sel]}: </span><span id="substat2">0</span> + <input type="number" id="modifySubstat2"></div>
-                <div><span>${player.ATTSELECTER[player.attmagSel]}: </span><span id="attmag">0</span> + <input type="number" id="modifyAttmag"></div>
-                <div><span>올스탯%: </span><input type="number" id="modifyallstatPercent"></div>
-                <hr>
+                <br>스타포스: <input type="number" class="modifyInput" id="modifyStarforce">성
+                <table class="modifyTable">
+                    <tr>
+                        <td></td><td>기본스탯</td><td></td><td>추가옵션</td>
+                    </tr>
+                    <tr>
+                        <td>${player.STATSSELECTER[player.mainstatSel]}: </td><td id="mainstat">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifyMainstat"></td>
+                    </tr>
+                    <tr>
+                        <td>${player.STATSSELECTER[player.substat1Sel]}: </td><td id="substat1">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifySubstat1"></td>
+                    </tr>
+                    <tr>
+                        <td>${player.STATSSELECTER[player.substat2Sel]}: </td><td id="substat2">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifySubstat2"></td>
+                    </tr>
+                    <tr>
+                        <td>${player.ATTSELECTER[player.attmagSel]}: </td><td id="attmag">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifyAttmag"></td>
+                    </tr>
+                    <tr>
+                        <td>올스탯%: </td><td></td><td></td><td><input type="number" class="modifyInput" id="modifyallstatPercent"></td>
+                    </tr>
+                </table>    
+                <br><hr><br>
                 <div>잠재능력</div>
-                <table>
+                <table id="modifyPotentialTable">
                     <tr>
                         <c:forEach begin="0" end="2" var="count" varStatus="status">
                         </tr><tr>
@@ -225,8 +259,9 @@
                                 <td>
                                     <select class="modifyPotential" id="modifyPotential${count}"></select>
                                 </td>
+                                <td> : </td>
                                 <td>
-                                    <input type="number" id="modifyPotentialInput${count}">
+                                    <input class="modifyInput" type="number" id="modifyPotentialInput${count}">
                                 </td>
                             </div>
                         </c:forEach>
@@ -297,7 +332,7 @@
                                             <td>순수 ${player.STATSSELECTER[player.substat2Sel]}: ${player.substat2} → ${playerCompare.substat2}</td><td>${player.STATSSELECTER[player.substat2Sel]}%: ${player.substat2Percent}% → ${playerCompare.substat2Percent}%</td><td>총 ${player.STATSSELECTER[player.substat2Sel]}: ${player.totalsubstat2} → ${playerCompare.totalsubstat2}</td>
                                     </c:if>
                                     </tr><tr>
-                                        <td></td><td>올스탯%: ${player.allstatPercent}% → ${playerCompare.allstatPercent}%</td>
+                                        <td>고정 ${player.STATSSELECTER[player.mainstatSel]}: ${player.fixedMainstat} → ${playerCompare.fixedMainstat}</td><td>올스탯%: ${player.allstatPercent}% → ${playerCompare.allstatPercent}%</td>
                                     </tr><tr>
                                         <td>${player.ATTSELECTER[player.attmagSel]}: ${player.attmag} → ${playerCompare.attmag}</td><td>${player.ATTSELECTER[player.attmagSel]}%: ${player.attmagPercent}% → ${playerCompare.attmagPercent}%</td><td>총 ${player.ATTSELECTER[player.attmagSel]}: ${player.totalattmag} → ${playerCompare.totalattmag}</td>
                                     </tr><tr>
@@ -326,38 +361,40 @@
                                             <td class="itemTable"> </td>
                                         </c:when>
                                         <c:otherwise>
-                                            <td class="itemTable" onclick="clickimage('item' + '${itemIndex}');"><img src="${playerCompare.equipeditem[itemIndex].itemImg}"></td>
+                                            <td class="itemTable" onclick="clickimage('item' + '${itemIndex}');">
+                                                <c:if test="${playerCompare.equipeditem[itemIndex].isModified == 1}"><div class="itemModifiedBorder"></c:if>
+                                                <img src="${playerCompare.equipeditem[itemIndex].itemImg}">
+                                                <c:if test="${playerCompare.equipeditem[itemIndex].isModified == 1}"></div></c:if>
+                                            </td>
                                             <c:set var="itemIndex" value="${itemIndex + 1}"/>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:forEach>
                             </tr>
                         </table>
-                    </td><td>
-                        <c:forEach begin="0" end="24" var="count" varStatus="status">
-                            <div class="items" id="item${count}">
-                                <div class="itemDescription">
-                                    <p>아이템명: ${playerCompare.equipeditem[count].itemName}</p>
-                                    <p>제한레벨: ${playerCompare.equipeditem[count].reqLev}</p>
-                                    <p>${playerCompare.STATSSELECTER[playerCompare.mainstatSel]}: ${playerCompare.equipeditem[count].mainstat}</p>
-                                    <p>${playerCompare.STATSSELECTER[playerCompare.substat1Sel]}: ${playerCompare.equipeditem[count].substat1}</p>
-                                    <c:if test="${playerCompare.substat2Sel >= 0}"><p>${playerCompare.STATSSELECTER[playerCompare.substat2Sel]}: ${playerCompare.equipeditem[count].substat2}</p></c:if>
-                                    <p>${playerCompare.STATSSELECTER[playerCompare.mainstatSel]}%: ${playerCompare.equipeditem[count].mainstatPercent}</p>
-                                    <p>${playerCompare.STATSSELECTER[playerCompare.substat1Sel]}%: ${playerCompare.equipeditem[count].substat1Percent}</p>
-                                    <c:if test="${playerCompare.substat2Sel >= 0}"><p>${playerCompare.STATSSELECTER[player.substat2Sel]}%: ${playerCompare.equipeditem[count].substat2Percent}</p></c:if>
-                                    <p>올스탯퍼: ${playerCompare.equipeditem[count].allstatPercent}</p>
-                                    <p>${playerCompare.ATTSELECTER[playerCompare.attmagSel]}: ${playerCompare.equipeditem[count].attmag}</p>
-                                    <p>${playerCompare.ATTSELECTER[playerCompare.attmagSel]}%: ${playerCompare.equipeditem[count].attmagPercent}</p>
-                                    <p>크리티컬 데미지: ${playerCompare.equipeditem[count].critDMG}</p>
-                                    <p>보스 몬스터 공격시 데미지: ${playerCompare.equipeditem[count].bossDMG}</p>
-                                    <p>몬스터 방어율 무시: ${playerCompare.equipeditem[count].penetrate}</p>
-                                    <button onclick="modify('${count}');">수정</button>
-                                    <%-- TODO: If user modify items, these item's border color will change to red --%>
-                                    <%-- TODO: If user press the button, change items image. Finally 'apply' button will recalculate stats. --%>
-                                    <%-- TODO: 'Compare to previous stats' function will useful. --%>
+                    </td><td id="itemDescriptCell">
+                        <div id="itemDescriptBorder">
+                            <c:forEach begin="0" end="24" var="count" varStatus="status">
+                                <div class="items" id="item${count}">
+                                    <div class="itemDescription">
+                                        <div id="itemTitle">${playerCompare.equipeditem[count].itemName}</div>
+                                        <div>제한레벨: ${playerCompare.equipeditem[count].reqLev}</div>
+                                        <div class="itemStatSeparator"><div class="itemStat">${playerCompare.STATSSELECTER[playerCompare.mainstatSel]}: ${playerCompare.equipeditem[count].mainstat}</div><div class="itemStat">${playerCompare.STATSSELECTER[playerCompare.mainstatSel]}%: ${playerCompare.equipeditem[count].mainstatPercent}%</div></div>
+                                        <div class="itemStatSeparator"><div class="itemStat">${playerCompare.STATSSELECTER[playerCompare.substat1Sel]}: ${playerCompare.equipeditem[count].substat1}</div><div class="itemStat">${playerCompare.STATSSELECTER[playerCompare.substat1Sel]}%: ${playerCompare.equipeditem[count].substat1Percent}%</div></div>
+                                        <c:if test="${playerCompare.substat2Sel >= 0}"><div class="itemStatSeparator"><div class="itemStat">${playerCompare.STATSSELECTER[playerCompare.substat2Sel]}: ${playerCompare.equipeditem[count].substat2}</div><div class="itemStat">${playerCompare.STATSSELECTER[player.substat2Sel]}%: ${playerCompare.equipeditem[count].substat2Percent}%</div></div></c:if>
+                                        <div>올스탯%: ${playerCompare.equipeditem[count].allstatPercent}%</div>
+                                        <div class="itemStatSeparator"><div class="itemStat">${playerCompare.ATTSELECTER[playerCompare.attmagSel]}: ${playerCompare.equipeditem[count].attmag}</div><div class="itemStat">${playerCompare.ATTSELECTER[playerCompare.attmagSel]}%: ${playerCompare.equipeditem[count].attmagPercent}%</div></div>
+                                        <div>크리티컬 데미지: ${playerCompare.equipeditem[count].critDMG}%</div>
+                                        <div>보스 몬스터 공격시 데미지: ${playerCompare.equipeditem[count].bossDMG}%</div>
+                                        <div>몬스터 방어율 무시: ${playerCompare.equipeditem[count].penetrate}%</div>
+                                        <button onclick="modify('${count}');">수정</button>
+                                        <%-- TODO: If user modify items, these item's border color will change to red --%>
+                                        <%-- TODO: If user press the button, change items image. Finally 'apply' button will recalculate stats. --%>
+                                        <%-- TODO: 'Compare to previous stats' function will useful. --%>
+                                    </div>
                                 </div>
-                            </div>
-                        </c:forEach>
+                            </c:forEach>
+                        </div>
                     </td></tr>
                 </table>
             </div>

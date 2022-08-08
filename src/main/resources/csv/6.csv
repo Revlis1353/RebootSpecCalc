@@ -1,1 +1,4 @@
-itemName, reqLev, mainstat, substat1, substat2, attmag, set
+itemName, reqLev, mainstat, substat1, substat2, attmag, set, penetrate, itemImg
+크리스탈 웬투스 뱃지, 130, 10, 10, 10, 5, 1, 0, https://avatar.maplestory.nexon.com/ItemIcon/KEOKJHGG.png
+칠요의 뱃지, 100, 7, 7, 7, 7, 0, 10, https://avatar.maplestory.nexon.com/ItemIcon/KEOKJFOB.png
+창세의 뱃지, 200, 15, 15, 15, 10, 3, 0, 

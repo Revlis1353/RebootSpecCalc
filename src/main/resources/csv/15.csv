@@ -1,4 +1,4 @@
-itemName, reqLev, mainstat, substat1, substat2, attmag, set
-로얄 블랙메탈 숄더, 120, 10, 10, 10, 6, 1
-앱솔랩스 숄더, 150, 14, 14, 14, 10, 5
-아케인 숄더, 200, 35, 35, 35, 20, 6
+itemName, reqLev, mainstat, substat1, substat2, attmag, set, itemImg
+로얄 블랙메탈 숄더, 120, 10, 10, 10, 6, 1, https://avatar.maplestory.nexon.com/ItemIcon/KEOHJGJB.png
+앱솔랩스 숄더, 150, 14, 14, 14, 10, 5, https://avatar.maplestory.nexon.com/ItemIcon/KEOHJGJH.png
+아케인 숄더, 200, 35, 35, 35, 20, 6, https://avatar.maplestory.nexon.com/ItemIcon/KEOHJFOB.png

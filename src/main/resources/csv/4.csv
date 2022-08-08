@@ -1,6 +1,7 @@
-itemName, reqLev, mainstat, substat1, substat2, attmag, set
-카오스 혼테일의 목걸이, 120, 10, 10, 10, 2, 1
-매커네이터 목걸이, 120, 10, 10, 10, 1, 1
-도미네이터 목걸이, 140, 20, 20, 20, 3, 1
-데이브레이크 펜던트, 140, 8, 8, 8, 2, 2
-고통의 근원, 160, 10, 10, 10, 3, 3
+itemName, reqLev, mainstat, substat1, substat2, attmag, set, itemImg
+카오스 혼테일의 목걸이, 120, 10, 10, 10, 2, 1, 
+매커네이터 목걸이, 120, 10, 10, 10, 1, 1, https://avatar.maplestory.nexon.com/ItemIcon/KEOAJFLF.png
+퍼플 펜던트, 130, 16, 0, 0, 0, 0, https://avatar.maplestory.nexon.com/ItemIcon/KEOAJHHE.png
+도미네이터 목걸이, 140, 20, 20, 20, 3, 1, https://avatar.maplestory.nexon.com/ItemIcon/KEOAJGLB.png
+데이브레이크 펜던트, 140, 8, 8, 8, 2, 2, https://avatar.maplestory.nexon.com/ItemIcon/KEOAJDKC.png
+고통의 근원, 160, 10, 10, 10, 3, 3, https://avatar.maplestory.nexon.com/ItemIcon/KEOAJDNB.png

@@ -111,13 +111,20 @@
     font-size: 12px;
 }
 
+tr.itemTable{
+    height: 79px;
+}
+
 td.itemTable{
     text-align: center;
     vertical-align: middle;
+    padding: 1px;
+    width: 75px;
+    height: 75px;
 }
 
 #itemDescripterOuter{
-    margin-left: 200px;
+    margin-left: 100px;
     margin-top: 100px;
 }
 
@@ -128,8 +135,20 @@ td.itemTable{
 .itemTable{
     border: 1px solid black;
     border-collapse: collapse;
-    width: 75px;
-    height: 75px;
+}
+
+.itemModifiedBorder{
+    box-sizing: border-box;
+    width: inherit;
+    height: inherit;
+    border: 3px solid red;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.itemModifiedBorder img{
+    margin: auto;
 }
 
 .items{
@@ -148,7 +167,8 @@ td.itemTable{
 .itemDescription{
     display: block;
     width: 400px;
-    margin-left: 100px;
+    margin-left: 50px;
+    margin-right: 50px;
 }
 
 .navi{
@@ -163,11 +183,24 @@ td.itemTable{
 
 #mainContent{
     text-align: center;
-    padding-top: 100px;
+    padding-top: 50px;
+}
+
+#mainContentInner{
+    width: fit-content;
+    margin: auto;
+    border-radius: 20px;
+    border: 2px solid black;
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 .characterSpecInner{
     margin: auto;
+}
+
+#playerSpecTable{
+    line-height: 150%;
 }
 
 .navFormSelect{
@@ -209,4 +242,60 @@ td.itemTable{
 
 #playerSpecTable>tbody>tr>td{
     width: 250px;
+}
+
+.modifyTable{
+    margin: auto;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.modifyTable tbody tr{
+    line-height: 25px;
+}
+
+#modifyPotentialTable{
+    width: 250px;
+    margin: auto;
+    margin-top: 20px;
+    text-align: center;
+}
+
+#modifyPotentialTable tbody tr{
+    line-height: 25px;
+}
+
+.modifyInput{
+    width: 75px;
+}
+
+#selectItem{
+    margin-top: 20px;
+}
+
+.itemStatSeparator{
+    display: flex;
+}
+
+.itemStat{
+    width: 150px;
+}
+
+#itemDescriptCell{
+    line-height: 200%;
+}
+
+#itemTitle{
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+#itemDescriptBorder{
+    height: 430px;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding-top: 20px;
+    border-radius: 20px;
+    border: 2px dotted black;
 }

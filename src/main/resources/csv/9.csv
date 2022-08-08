@@ -1,1 +1,5 @@
-itemName, reqLev, mainstat, substat1, substat2, attmag, set
+itemName, reqLev, mainstat, substat1, substat2, attmag, set, itemImg
+아쿠아틱 레터 눈장식, 100, 6, 6, 6, 1, 1, 
+블랙빈 마크, 135, 7, 7, 7, 1, 1, https://avatar.maplestory.nexon.com/ItemIcon/KEPAJFND.png
+파풀라투스 마크, 145, 8, 8, 8, 1, 1, https://avatar.maplestory.nexon.com/ItemIcon/KEPAJFJG.png
+마력이 깃든 안대, 160, 15, 15, 15, 3, 3, https://avatar.maplestory.nexon.com/ItemIcon/KEPAJFJJ.png

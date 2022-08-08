@@ -107,6 +107,25 @@ public class Crawler{
         return "Null";
     }
 
+    public int getArcaneMainstat(){
+        Document document = process(equipmentUrl);
+        Elements targets = document.getElementsByClass("arcane_weapon_wrap").select("ul > li");
+        
+        int arcaneMainstat = 0;
+        for(Element target : targets){
+            String targeturl = target.select("span > a").attr("href");
+            String arcaneResponseBody = jsoupXMLHttpRequest(siteUrlBase + targeturl, equipmentUrl).body();
+            arcaneResponseBody = StringEscapeUtils.unescapeJava(arcaneResponseBody.substring(18, arcaneResponseBody.length()-2));
+            
+            Document arcaneDocument = Jsoup.parse(arcaneResponseBody);
+            Elements arcaneElements = arcaneDocument.getElementsByClass("stet_info").select("ul > li");
+
+            arcaneMainstat += Integer.parseInt(arcaneElements.get(2).select(".point_td > font").get(0).text());
+
+        }
+        return arcaneMainstat;
+    }
+
     private DataItem getEquipment(Document itemDocument){
 
         DataItem item = new DataItem();
