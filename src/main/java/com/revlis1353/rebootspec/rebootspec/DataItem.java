@@ -44,6 +44,7 @@ public class DataItem{
     private int set;    //0: None, 1: boss, 2: dawn, 3: black, 4: ruta, 5: absol, 6: arcane
     private int starforce;
 
+    private int isModified;
     private int trashval;
     
     private static final int STARFORCEWEAPATTACK130[] = {6, 7, 7, 8, 9, 10, 11, 29, 30, 31};
@@ -59,22 +60,22 @@ public class DataItem{
         int starforceStatToAdd = 0;
         int starForceAttmagToAdd = 0;
         int weaponAttAbove15[];
-        if(reqLev == 130){
+        if(reqLev <= 139){
             starforceStatToAdd = 7;
             starForceAttmagToAdd = 7;
             weaponAttAbove15 = STARFORCEWEAPATTACK130;
         }
-        else if(reqLev == 140) {
+        else if(reqLev <= 149) {
             starforceStatToAdd = 9;
             starForceAttmagToAdd = 8;
             weaponAttAbove15 = STARFORCEWEAPATTACK140;
         }
-        else if(reqLev == 150) {
+        else if(reqLev <= 159) {
             starforceStatToAdd = 11;
             starForceAttmagToAdd = 9;
             weaponAttAbove15 = STARFORCEWEAPATTACK150;
         }
-        else if(reqLev == 160) {
+        else if(reqLev <= 169) {
             starforceStatToAdd = 13;
             starForceAttmagToAdd = 10;
             weaponAttAbove15 = STARFORCEWEAPATTACK160;
@@ -88,7 +89,7 @@ public class DataItem{
             weaponAttAbove15 = STARFORCEWEAPATTACK130;
         }
 
-        if(modifyIndex == 13){
+        if(modifyIndex == 13){  //If Weapon
             for(int i = 0; i < starforce && i < 25; i++){
                 if(i < 5){
                     starforceAllstat += 2;
@@ -106,6 +107,12 @@ public class DataItem{
         }
         else{
             for(int i = 0; i < starforce && i < 25; i++){
+                if(modifyIndex == 20){  //If glove
+                    if(i == 4 || i == 6 || i == 8 || i == 10 || i == 12 || i == 13 || i == 14){
+                        starforceAttmag += 1;
+                    }
+                }
+                
                 if(i < 5){
                     starforceAllstat += 2;
                 }

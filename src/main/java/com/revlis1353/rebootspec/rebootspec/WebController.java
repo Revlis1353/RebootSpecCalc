@@ -77,6 +77,7 @@ public class WebController {
         Crawler crawler = new Crawler(charVO);
         Character player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
         player.setCharacterImgUrl(crawler.getCharacterImgUrl());
+        player.setFixedMainstat(crawler.getArcaneMainstat());
 
         //index에서 form을 전달받아 characterName을 Crawler로 전달, 아이템 데이터를 받는다.
         //아이템 데이터를 정리하여 Character Data 객체에 저장 후 출력
@@ -135,6 +136,7 @@ public class WebController {
     public int modifyItem(@RequestBody DataItem data, BindingResult result, Model model) {
         Character playerCompare = (Character)model.getAttribute("playerCompare");
         data.applyStarforce();
+        data.setIsModified(1);
         playerCompare.modifyItem(data);
         return 0;
     }

@@ -43,6 +43,8 @@ public class Character {
     private int dmg;
     private float penetrate;
 
+    private int fixedMainstat;
+
     private int mainstatSel;
     private int substat1Sel;
     private int substat2Sel;
@@ -83,6 +85,8 @@ public class Character {
         this.bossDMG = player.getBossDMG();
         this.dmg = player.getDmg();
         this.penetrate = player.getPenetrate();
+
+        this.fixedMainstat = player.getFixedMainstat();
     
         this.mainstatSel = player.getMainstatSel();
         this.substat1Sel = player.getSubstat1Sel();
@@ -157,7 +161,7 @@ public class Character {
 
         applySetOption();
 
-        totalmainstat = mainstat * (100 + mainstatPercent + allstatPercent) / 100;
+        totalmainstat = fixedMainstat + mainstat * (100 + mainstatPercent + allstatPercent) / 100;
         totalsubstat1 = substat1 * (100 + substat1Percent + allstatPercent) / 100;
         totalsubstat2 = substat2 * (100 + substat2Percent + allstatPercent) / 100;
         totalattmag = attmag * (100 + attmagPercent) / 100;

@@ -1,4 +1,4 @@
-itemName, reqLev, mainstat, substat1, substat2, attmag, set
-골든 클로버 벨트, 140, 15, 15, 15, 1, 1
-분노한 자쿰의 벨트, 150, 18, 18, 18, 1, 1
-몽환의 벨트, 200, 50, 50, 50, 6, 3
+itemName, reqLev, mainstat, substat1, substat2, attmag, set, itemImg
+골든 클로버 벨트, 140, 15, 15, 15, 1, 1, https://avatar.maplestory.nexon.com/ItemIcon/KEOBJFJD.png
+분노한 자쿰의 벨트, 150, 18, 18, 18, 1, 1, https://avatar.maplestory.nexon.com/ItemIcon/KEOBJFHH.png
+몽환의 벨트, 200, 50, 50, 50, 6, 3, https://avatar.maplestory.nexon.com/ItemIcon/KEOBJEOJ.png

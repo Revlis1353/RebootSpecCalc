@@ -1,6 +1,6 @@
-itemName, reqLev, mainstat, substat1, substat2, attmag, set
-1티어 이벤트링, 100, 40, 40, 40, 25, 0
-마이스터링, 140, 5, 5, 5, 1, 0
-가디언 엔젤 링, 160, 5, 5, 5, 2, 1
-여명의 가디언 엔젤 링, 160, 5, 5, 5, 2, 2
-거대한 공포, 200, 5, 5, 5, 4, 3
+itemName, reqLev, mainstat, substat1, substat2, attmag, set, itemImg
+1티어 이벤트링, 100, 40, 40, 40, 25, 0, https://avatar.maplestory.nexon.com/ItemIcon/KEODPEMD.png
+마이스터링, 140, 5, 5, 5, 1, 0, https://avatar.maplestory.nexon.com/ItemIcon/KEODIHLE.png
+가디언 엔젤 링, 160, 5, 5, 5, 2, 1, https://avatar.maplestory.nexon.com/ItemIcon/KEODIEPH.png
+여명의 가디언 엔젤 링, 160, 5, 5, 5, 2, 2, https://avatar.maplestory.nexon.com/ItemIcon/KEODIEPH.png
+거대한 공포, 200, 5, 5, 5, 4, 3, https://avatar.maplestory.nexon.com/ItemIcon/KEODIEOH.png
