@@ -17,6 +17,7 @@ public class Crawler{
     private static final String siteUrlRankingPrefix = "/Ranking/World/Total?c=";
     private static final String siteUrlPostfix = "&w=254";
     private static final String STATSSELECTER[] = {"STR", "DEX", "INT", "LUK"};
+    private static final String STATSSELECTERKOR[] = {"힘", "민첩", "지력", "운"};
     private static final String ATTSELECTER[] = {"공격력", "마력"};
 
     //private String characterName;
@@ -29,6 +30,10 @@ public class Crawler{
     private String characterUrl;
     private String equipmentUrl;
 
+    private Document siteDocument;
+    private Document characterDocument;
+    private Document equipmentDocument;
+
     //TODO: Expected Bug) If some equipment are empty, ~
 
 
@@ -38,14 +43,20 @@ public class Crawler{
         this.substat1Sel = character.getsubstat1Sel();
         this.substat2Sel = character.getsubstat2Sel();
         this.attmagSel = character.getattmagSel();
+
         this.siteUrl = siteUrlBase + siteUrlRankingPrefix + character.getcharacterName() + siteUrlPostfix;
+        siteDocument = process(siteUrl);
+
         characterUrl = getCharacterUrl(siteUrl);
+        characterDocument = process(characterUrl);
+
         equipmentUrl = getCharacterEquipmentUrl(characterUrl);
+        equipmentDocument = process(equipmentUrl);
     }
 
     public ArrayList<DataItem> getCharacterItemData(){        
         //Get url of each equipments
-        Elements equipmentsTags = process(equipmentUrl).getElementsByClass("weapon_wrap").select("ul > li > span > a");
+        Elements equipmentsTags = equipmentDocument.getElementsByClass("weapon_wrap").select("ul > li > span > a");
 
         //Get data from each equipments
         ArrayList<DataItem> equipeditem = new ArrayList<DataItem>();
@@ -64,41 +75,59 @@ public class Crawler{
 
             equipeditem.add(getEquipment(itemDocument));
         }
-
-        //TODO: equipeditem.add(getCharacterHyperstat());
-        //TODO: Crawl arcane symbol data 
-
         return equipeditem;
     }
     
     public int getCharacterLevel() {
-        Document document = process(siteUrl);
-        Elements urlElements = document.getElementsByClass("search_com_chk");
+        Elements urlElements = siteDocument.getElementsByClass("search_com_chk");
         int characterLevel = Integer.parseInt(urlElements.select("td").get(2).text().substring(3));
         return characterLevel;
     }
 
-    private DataItem getCharacterHyperstat(){
-        //TODO: get Hyper Stat
-        return null;
+    public HyperstatVO getCharacterHyperstat(){
+        HyperstatVO hyperstat = new HyperstatVO();
+        Elements tablecols = characterDocument.getElementsByClass("table_style01").get(1).select("tbody > tr");
+        String hyperstatText = tablecols.get(tablecols.size()-1).select("td > span").html();
+        String[] hyperstatSplited = hyperstatText.split("<br>");
+
+        for(String target : hyperstatSplited){
+            String[] targetSplited = target.split(" ");
+            if(targetSplited[0].equals("공격력과")){
+                hyperstat.setAttmag(Integer.parseInt(targetSplited[2]));
+            }
+            else if(targetSplited[0].equals("크리티컬") && targetSplited[1].equals("데미지")){
+                hyperstat.setCritDMG(Integer.parseInt(StringUtils.chop(targetSplited[2])));
+            }
+            else if(targetSplited[0].equals("데미지")){
+                hyperstat.setDmg(Integer.parseInt(StringUtils.chop(targetSplited[1])));
+            }
+            else if(targetSplited[0].equals("보스")){
+                hyperstat.setBossDMG(Integer.parseInt(StringUtils.chop(targetSplited[5])));
+            }
+            else if(targetSplited[0].equals("방어율")){
+                hyperstat.setPenetrate(Integer.parseInt(StringUtils.chop(targetSplited[2])));
+            }
+            else if(targetSplited[0].equals(STATSSELECTERKOR[mainstatSel])){
+                hyperstat.setFixedMainstat(Integer.parseInt(targetSplited[1]));
+            }
+        }
+
+        return hyperstat;
     }
 
     public String getCharacterImgUrl(){
-        Document document = process(characterUrl);
-        String charImgUrl = document.getElementsByClass("char_img").select("div > img").attr("src");
+        String charImgUrl = characterDocument.getElementsByClass("char_img").select("div > img").attr("src");
         return charImgUrl;
     }
 
     private String getCharacterUrl(String siteUrl){
-        Document document = process(siteUrl);
-        Elements urlElements = document.getElementsByClass("search_com_chk");
+        Elements urlElements = siteDocument.getElementsByClass("search_com_chk");
         String characterUrl = urlElements.select(".left > dl > dt > a").attr("href");
         return siteUrlBase + characterUrl;
     }
 
     private String getCharacterEquipmentUrl(String characterurl){
-        Document document = process(characterurl);
-        Elements urlElements = document.getElementsByClass("lnb_list").select("li");
+        Elements urlElements = characterDocument.getElementsByClass("lnb_list").select("li");
         for(Element element : urlElements){
             if(element.text().equalsIgnoreCase("장비") == true){
                 return siteUrlBase + element.select("a").attr("href");
@@ -108,8 +137,7 @@ public class Crawler{
     }
 
     public int getArcaneMainstat(){
-        Document document = process(equipmentUrl);
-        Elements targets = document.getElementsByClass("arcane_weapon_wrap").select("ul > li");
+        Elements targets = equipmentDocument.getElementsByClass("arcane_weapon_wrap").select("ul > li");
         
         int arcaneMainstat = 0;
         for(Element target : targets){
@@ -162,13 +190,16 @@ public class Crawler{
         itemNameSplited.equals("창세의") || itemNameSplited.equals("거대한") || itemNameSplited.equals("커맨더") || itemNameSplited.equals("미트라의")){
             item.setSet(3);
         }
-        else if(itemNameSplited.equals("하이네스") || itemNameSplited.equals("이글아이") || itemNameSplited.equals("트릭스터") || itemNameSplited.equals("파프니르")){
+        else if(itemNameSplited.equals("하이네스") || itemNameSplited.equals("이글아이") || itemNameSplited.equals("트릭스터")){
             item.setSet(4);
         }
-        else if(itemNameSplited.equals("앱솔랩스")){
+        else if(itemName.contains("파프니르")){
+            item.setSet(4);
+        }
+        else if(itemName.contains("앱솔랩스")){
             item.setSet(5);
         }
-        else if(itemNameSplited.equals("아케인셰이드")){
+        else if(itemName.contains("아케인셰이드")){
             item.setSet(6);
         }
 

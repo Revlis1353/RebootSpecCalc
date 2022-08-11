@@ -45,6 +45,9 @@
                     }
                     var div1 = document.getElementById("bannerFull");
                     div1.style.visibility = "visible";
+                    var div2 = document.getElementById("bannerModify");
+                    div2.style.visibility = "visible";
+                    div2.style.display = "block";
                 },
                 error: function(){
                     alert("err");
@@ -94,6 +97,9 @@
         function modifyCancel(){
             var div1 = document.getElementById("bannerFull");
             div1.style.visibility = "hidden";
+            var div2 = document.getElementById("bannerModify");
+            div2.style.visibility = "hidden";
+            div2.style.display = "none";
             
             //Reset
             items = null;
@@ -141,6 +147,9 @@
                 success: function(data){
                     var div1 = document.getElementById("bannerFull");
                     div1.style.visibility = "hidden";
+                    var div2 = document.getElementById("bannerModify");
+                    div2.style.visibility = "hidden";
+                    div2.style.display = "none";
                     $("#mainContent").load("/spec #mainContentInner");
                 },
                 error: function(){
@@ -218,6 +227,109 @@
             }
             return flag;
         }
+
+        function modifyApply(){
+            $.ajax({
+                url: "/spec/modifyApply",
+                type: "POST",
+                contentType: 'application/json',
+                success: function(data){
+                    $("#mainContent").load("/spec #mainContentInner");
+                },
+                error: function(){
+                    alert("err");
+                }
+            });
+        }
+
+        function modifyReset(){
+            $.ajax({
+                url: "/spec/modifyReset",
+                type: "POST",
+                contentType: 'application/json',
+                success: function(data){
+                    $("#mainContent").load("/spec #mainContentInner");
+                },
+                error: function(){
+                    alert("err");
+                }
+            });
+        }
+
+        function modifyHyperstat(){
+            var mainstat = Number(document.getElementById("hypermainstat").innerText);
+            var attmag = Number(document.getElementById("hyperCritDMG").innerText);
+            var bossDMG = Number(document.getElementById("hyperPenetrate").innerText);
+            var critDMG = Number(document.getElementById("hyperDMG").innerText);
+            var dmg = Number(document.getElementById("hyperBossDMG").innerText);
+            var penetrate = Number(document.getElementById("hyperAttmag").innerText);
+
+            var datatoSend = {"fixedMainstat": mainstat, "attmag": attmag, "bossDMG": bossDMG,
+                                "critDMG": critDMG, "dmg": dmg, "penetrate": penetrate};
+
+            $.ajax({
+                url: "/spec/modifyHyperstat",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(datatoSend),
+                success: function(data){
+                    var div1 = document.getElementById("bannerFull");
+                    div1.style.visibility = "hidden";
+                    var div2 = document.getElementById("bannerHyperstat");
+                    div2.style.visibility = "hidden";
+                    div2.style.display = "none";
+                    $("#mainContent").load("/spec #mainContentInner");
+                },
+                error: function(){
+                    alert("err");
+                }
+            });
+        }
+        function modifyCancelHyperstat(){
+            var div1 = document.getElementById("bannerFull");
+            div1.style.visibility = "hidden";
+            var div2 = document.getElementById("bannerHyperstat");
+            div2.style.visibility = "hidden";
+            div2.style.display = "none";
+        }
+
+        function hyperstatcheckValidation(obj){
+            if(obj.value > 15){
+                obj.value = 15;
+            }
+            else if(obj.value < 0){
+                obj.value = 0;
+            }
+        }
+        function onchangeHypermainstat(obj){
+            hyperstatcheckValidation(obj);
+            document.getElementById("hypermainstat").innerText = 30 * Number(obj.value);
+        }
+        function onchangeHyperCritDMG(obj){
+            hyperstatcheckValidation(obj);
+            document.getElementById("hyperCritDMG").innerText = Number(obj.value);
+        }
+        function onchangeHyperPenetrate(obj){
+            hyperstatcheckValidation(obj);
+            document.getElementById("hyperPenetrate").innerText = 3 * Number(obj.value);
+        }
+        function onchangeHyperDMG(obj){
+            hyperstatcheckValidation(obj);
+            document.getElementById("hyperDMG").innerText = 3 * Number(obj.value);
+        }
+        function onchangeHyperBossDMG(obj){
+            hyperstatcheckValidation(obj);
+            if(obj.value >= 6){
+                document.getElementById("hyperBossDMG").innerText = 15 + 4 * (Number(obj.value) - 5);
+            }
+            else{
+                document.getElementById("hyperBossDMG").innerText = 3 * Number(obj.value);
+            }
+        }
+        function onchangeHyperAttmag(obj){
+            document.getElementById("hyperAttmag").innerText = 3 * Number(obj.value);
+        }
+
     </script>
     <link rel="stylesheet" href="resource/css/board.css" type="text/css">
 </head>
@@ -271,7 +383,24 @@
                     <button onclick="modifyConfirm();">apply</button>
                     <button onclick="modifyCancel();">cancel</button>
                 </div>
-                
+            </div>
+            <div id="bannerHyperstat">
+                <div>하이퍼스탯 설정</div>
+                <table>
+                    <tr><td>${player.STATSSELECTER[player.mainstatSel]}</td><td><input type="number" min="0" max="15" onchange="onchangeHypermainstat(this);"></td><td>→</td><td id="hypermainstat">0</td><td></td></tr>
+                    <tr><td>크리 데미지</td><td><input type="number" min="0" max="15" onchange="onchangeHyperCritDMG(this);"></td><td>→</td><td id="hyperCritDMG">0</td><td>%</td></tr>
+                    <tr><td>방어율 무시</td><td><input type="number" min="0" max="15" onchange="onchangeHyperPenetrate(this);"></td><td>→</td><td id="hyperPenetrate">0</td><td>%</td></tr>
+                    <tr><td>데미지</td><td><input type="number" min="0" max="15" onchange="onchangeHyperDMG(this);"></td><td>→</td><td id="hyperDMG">0</td><td>%</td></tr>
+                    <tr><td>보스데미지</td><td><input type="number" min="0" max="15" onchange="onchangeHyperBossDMG(this);"></td><td>→</td><td id="hyperBossDMG">0</td><td>%</td></tr>
+                    <tr><td>공격력 / 마력</td><td><input type="number" min="0" max="15" onchange="onchangeHyperAttmag(this);"></td><td>→</td><td id="hyperAttmag">0</td><td></td></tr>
+                </table>
+                <div>
+                    <button onclick="modifyConfirmHyperstat();">확인</button>
+                    <button onclick="modifyCancelHyperstat();">취소</button>
+                </div>
+            </div>
+            <div id="bannerUnion">
+
             </div>
         </div>
     </div>
@@ -321,7 +450,7 @@
                         </td>
                         <td>
                             <div class="characterSpec">
-                                <p>캐릭터명: ${player.characterName}</p>
+                                <p><span>캐릭터명: ${player.characterName}</span><button>하이퍼스탯 설정</button><button>유니온 설정</button></p>
                                 <table id="playerSpecTable">
                                     <tr>
                                         <td>순수 ${player.STATSSELECTER[player.mainstatSel]}: ${player.mainstat} → ${playerCompare.mainstat}</td><td>${player.STATSSELECTER[player.mainstatSel]}%: ${player.mainstatPercent}% → ${playerCompare.mainstatPercent}%</td><td>총 ${player.STATSSELECTER[player.mainstatSel]}: ${player.totalmainstat} → ${playerCompare.totalmainstat}</td>
@@ -345,6 +474,10 @@
                         </td>
                     </tr>
                 </table>
+            </div>
+            <div id="buttons">
+                <button onclick="modifyApply();">적용</button>
+                <button onclick="modifyReset();">초기화</button>
             </div>
             <div id="itemDescripterOuter">
                 <table class="itemDescripterTable">

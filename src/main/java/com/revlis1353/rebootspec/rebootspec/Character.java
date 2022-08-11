@@ -22,12 +22,15 @@ public class Character {
     private String ATTSELECTER[] = {"공격력", "마력"};
 
     private ArrayList<DataItem> equipeditem;
+    private HyperstatVO hyperstat;
+
     private String characterName;
     private String characterImgUrl;
 
     private int basemainstat;
     private int basesubstat1;
     private int basesubstat2;
+    private int baseFixedMainstat;
 
     private int mainstat;
     private int substat1;
@@ -59,6 +62,7 @@ public class Character {
 
     public Character(){
         equipeditem = new ArrayList<DataItem>();
+        hyperstat = new HyperstatVO();
     }
 
     @SuppressWarnings("unchecked")
@@ -71,6 +75,7 @@ public class Character {
         this.basemainstat = player.getBasemainstat();
         this.basesubstat1 = player.getBasesubstat1();
         this.basesubstat2 = player.getBasesubstat2();
+        this.baseFixedMainstat = player.getBaseFixedMainstat();
     
         this.mainstat = player.getMainstat();
         this.substat1 = player.getSubstat1();
@@ -97,6 +102,8 @@ public class Character {
         this.totalsubstat1 = player.getTotalsubstat1();
         this.totalsubstat2 = player.getTotalsubstat2();
         this.totalattmag = player.getTotalattmag();
+
+        this.hyperstat = player.getHyperstat();
     
         set = player.getSet().clone();
     }
@@ -124,8 +131,21 @@ public class Character {
         this.basesubstat1 = 4;
         this.basesubstat2 = 4;
     }
+
+    public void clearEquipmentsModifyLog(){
+        for(DataItem target : equipeditem){
+            target.setIsModified(0);
+        }
+    }
+
+    public void printset(){
+        for(int i : set){
+            System.out.println(i);
+        }
+    }
     
     public void calculateSpec(){
+        //Initialize variables
         mainstat = 0;
         substat1 = 0;
         substat2 = 0;
@@ -138,9 +158,11 @@ public class Character {
         bossDMG = 0;
         penetrate = 0;
         dmg = 0;
+        fixedMainstat = 0;
         set = new int[7];
+
+        //Apply item spec
         for(DataItem item : equipeditem){
-            //System.out.println(item.getItemName() + " : " + item.getMainstatPercent());
             mainstat += item.getMainstat();
             substat1 += item.getSubstat1();
             substat2 += item.getSubstat2();
@@ -158,14 +180,24 @@ public class Character {
         mainstat += basemainstat;
         substat1 += basesubstat1;
         substat2 += basesubstat2;
+        fixedMainstat += baseFixedMainstat;
 
+        //Apply Hyperstat
+        fixedMainstat += hyperstat.getFixedMainstat();
+        attmag += hyperstat.getAttmag();
+        bossDMG += hyperstat.getBossDMG();
+        critDMG += hyperstat.getCritDMG();
+        dmg += hyperstat.getDmg();
+        addPenetrate(hyperstat.getPenetrate());
+
+        //Apply set options
         applySetOption();
 
+        //Apply percent options
         totalmainstat = fixedMainstat + mainstat * (100 + mainstatPercent + allstatPercent) / 100;
         totalsubstat1 = substat1 * (100 + substat1Percent + allstatPercent) / 100;
         totalsubstat2 = substat2 * (100 + substat2Percent + allstatPercent) / 100;
         totalattmag = attmag * (100 + attmagPercent) / 100;
-        //Add spec of set
     }
 
     public void print(){

@@ -77,12 +77,15 @@ public class WebController {
         Crawler crawler = new Crawler(charVO);
         Character player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
         player.setCharacterImgUrl(crawler.getCharacterImgUrl());
-        player.setFixedMainstat(crawler.getArcaneMainstat());
+        player.setBaseFixedMainstat(crawler.getArcaneMainstat());
+        player.setHyperstat(crawler.getCharacterHyperstat());
 
         //index에서 form을 전달받아 characterName을 Crawler로 전달, 아이템 데이터를 받는다.
         //아이템 데이터를 정리하여 Character Data 객체에 저장 후 출력
         player.calculateSpec();
         model.addAttribute("player", player);
+
+        player.printset();
 
         Character playerCompare = new Character(player);
         model.addAttribute("playerCompare", playerCompare);
@@ -138,6 +141,26 @@ public class WebController {
         data.applyStarforce();
         data.setIsModified(1);
         playerCompare.modifyItem(data);
+        return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyApply")
+    public int applySpec(Model model) {
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+        playerCompare.clearEquipmentsModifyLog();
+        model.addAttribute("player", playerCompare);
+        Character newplayerCompare = new Character(playerCompare);
+        model.addAttribute("playerCompare", newplayerCompare);
+        return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyReset")
+    public int resetSpec(Model model) {
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = new Character(player);
+        model.addAttribute("playerCompare", playerCompare);
         return 0;
     }
 }
