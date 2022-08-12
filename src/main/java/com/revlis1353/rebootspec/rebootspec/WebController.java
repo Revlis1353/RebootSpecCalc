@@ -85,7 +85,7 @@ public class WebController {
         player.calculateSpec();
         model.addAttribute("player", player);
 
-        player.printset();
+        //player.printset();
 
         Character playerCompare = new Character(player);
         model.addAttribute("playerCompare", playerCompare);
@@ -141,6 +141,7 @@ public class WebController {
         data.applyStarforce();
         data.setIsModified(1);
         playerCompare.modifyItem(data);
+        //playerCompare.printset();
         return 0;
     }
 
@@ -163,4 +164,33 @@ public class WebController {
         model.addAttribute("playerCompare", playerCompare);
         return 0;
     }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyHyperstat")
+    public int modifyHyperstat(@RequestBody HyperstatVO data, BindingResult result, Model model) {
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+
+        player.setHyperstat(data);
+        player.calculateSpec();
+
+        playerCompare.setHyperstat(data);
+        playerCompare.calculateSpec();
+        return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyUnion")
+    public int modifyHyperstat(@RequestBody DataItem data, BindingResult result, Model model) {
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+        
+        player.setUnion(data);
+        player.calculateSpec();
+
+        playerCompare.setUnion(data);
+        playerCompare.calculateSpec();
+        return 0;
+    }
+
 }

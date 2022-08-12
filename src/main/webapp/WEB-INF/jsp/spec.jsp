@@ -119,10 +119,11 @@
             var itemName = items[parseInt($('#selectItem').val())].itemName;
             var itemImg = items[parseInt($('#selectItem').val())].itemImg;
             var penetrate = items[parseInt($('#selectItem').val())].penetrate;
+            var set = items[parseInt($('#selectItem').val())].set;
 
             var datatoSend = {"itemName": itemName, "modifyIndex": modifyIndex, "mainstat": mainstat, "substat1": substat1, "substat2": substat2,
                              "attmag": attmag, "allstatPercent": allstatPercent, "penetrate": penetrate, "pureattmag": pureattmag, "reqLev": reqLev, "starforce": starforce,
-                            "itemImg": itemImg};
+                            "itemImg": itemImg, "set":set};
             
             for(var i = 0; i < 3; i++){
                 var potentialData = $('#modifyPotential' + i).val();
@@ -257,12 +258,20 @@
         }
 
         function modifyHyperstat(){
+            var div1 = document.getElementById("bannerFull");
+            div1.style.visibility = "visible";
+            var div2 = document.getElementById("bannerHyperstat");
+            div2.style.visibility = "visible";
+            div2.style.display = "block";
+        }
+
+        function modifyConfirmHyperstat(){
             var mainstat = Number(document.getElementById("hypermainstat").innerText);
-            var attmag = Number(document.getElementById("hyperCritDMG").innerText);
-            var bossDMG = Number(document.getElementById("hyperPenetrate").innerText);
-            var critDMG = Number(document.getElementById("hyperDMG").innerText);
-            var dmg = Number(document.getElementById("hyperBossDMG").innerText);
-            var penetrate = Number(document.getElementById("hyperAttmag").innerText);
+            var attmag = Number(document.getElementById("hyperAttmag").innerText);
+            var bossDMG = Number(document.getElementById("hyperBossDMG").innerText);
+            var critDMG = Number(document.getElementById("hyperCritDMG").innerText);
+            var dmg = Number(document.getElementById("hyperDMG").innerText);
+            var penetrate = Number(document.getElementById("hyperPenetrate").innerText);
 
             var datatoSend = {"fixedMainstat": mainstat, "attmag": attmag, "bossDMG": bossDMG,
                                 "critDMG": critDMG, "dmg": dmg, "penetrate": penetrate};
@@ -330,6 +339,64 @@
             document.getElementById("hyperAttmag").innerText = 3 * Number(obj.value);
         }
 
+        function modifyUnion(){
+            var div1 = document.getElementById("bannerFull");
+            div1.style.visibility = "visible";
+            var div2 = document.getElementById("bannerUnion");
+            div2.style.visibility = "visible";
+            div2.style.display = "block";
+        }
+
+        function modifyConfirmUnion(){
+            var mainstat = Number($("#unionMainstat").val()) + Number($("#additionalMainstat").val());
+            var fixedMainstat = Number($("#additionalFixedMainstat").val());
+            var substat1 = Number($("#unionSubstat1").val()) + Number($("#additionalSubstat1").val());
+            var substat2 = Number($("#unionSubstat2").val()) + Number($("#additionalSubstat2").val());
+            var attmag = Number($("#unionAttmag").val()) + Number($("#additionalAttmag").val());
+            var bossDMG = Number($("#unionBossDMG").val()) + Number($("#additionalBossDMG").val());
+            var critDMG = Number($("#unionCritDMG").val()) + Number($("#additionalCritDMG").val());
+            var dmg = Number($("#additionalDMG").val());
+            var penetrate = (10000 - (100 - Number($("#unionPenetrate").val())) * (100 - Number($("#additionalPenetrate").val()))) / 100.0;
+            penetrate = (10000 - (100 - penetrate) * (100 - Number($("#blasterPenetrate").val()))) / 100.0;
+            if(document.getElementById("zeroLink").checked){
+                penetrate = (10000 - (100 - penetrate) * 90) / 100.0;
+            }
+            if(document.getElementById("hoyoungLink").checked){
+                penetrate = (10000 - (100 - penetrate) * 90) / 100.0;
+            }
+            if(document.getElementById("lumiLink").checked){
+                penetrate = (10000 - (100 - penetrate) * 85) / 100.0;
+            }
+
+            var datatoSend = {"mainstat": mainstat, "fixedMainstat": fixedMainstat, "substat1": substat1, "substat2": substat2, 
+                            "attmag": attmag, "bossDMG": bossDMG, "critDMG": critDMG, "dmg": dmg, "penetrate": penetrate};
+
+            $.ajax({
+                url: "/spec/modifyUnion",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(datatoSend),
+                success: function(data){
+                    var div1 = document.getElementById("bannerFull");
+                    div1.style.visibility = "hidden";
+                    var div2 = document.getElementById("bannerUnion");
+                    div2.style.visibility = "hidden";
+                    div2.style.display = "none";
+                    $("#mainContent").load("/spec #mainContentInner");
+                },
+                error: function(){
+                    alert("err");
+                }
+            });
+        }
+        function modifyCancelUnion(){
+            var div1 = document.getElementById("bannerFull");
+            div1.style.visibility = "hidden";
+            var div2 = document.getElementById("bannerUnion");
+            div2.style.visibility = "hidden";
+            div2.style.display = "none";
+        }
+
     </script>
     <link rel="stylesheet" href="resource/css/board.css" type="text/css">
 </head>
@@ -337,7 +404,7 @@
 <body>
     <div id="bannerFull">
         <div id="bannerBackground">
-            <div id="bannerModify">
+            <div id="bannerModify" class="banner">
                 <select id="selectItem" onchange="dynamicStats();">
                 </select>
                 <br>스타포스: <input type="number" class="modifyInput" id="modifyStarforce">성
@@ -361,7 +428,7 @@
                         <td>올스탯%: </td><td></td><td></td><td><input type="number" class="modifyInput" id="modifyallstatPercent"></td>
                     </tr>
                 </table>    
-                <br><hr><br>
+                <br><hr class="line"><br>
                 <div>잠재능력</div>
                 <table id="modifyPotentialTable">
                     <tr>
@@ -384,8 +451,8 @@
                     <button onclick="modifyCancel();">cancel</button>
                 </div>
             </div>
-            <div id="bannerHyperstat">
-                <div>하이퍼스탯 설정</div>
+            <div id="bannerHyperstat" class="banner">
+                <div class="bannerTitle">하이퍼스탯 설정</div>
                 <table>
                     <tr><td>${player.STATSSELECTER[player.mainstatSel]}</td><td><input type="number" min="0" max="15" onchange="onchangeHypermainstat(this);"></td><td>→</td><td id="hypermainstat">0</td><td></td></tr>
                     <tr><td>크리 데미지</td><td><input type="number" min="0" max="15" onchange="onchangeHyperCritDMG(this);"></td><td>→</td><td id="hyperCritDMG">0</td><td>%</td></tr>
@@ -399,8 +466,35 @@
                     <button onclick="modifyCancelHyperstat();">취소</button>
                 </div>
             </div>
-            <div id="bannerUnion">
-
+            <div id="bannerUnion" class="banner">
+                <div class="bannerTitle">유니온 / 추가스펙 설정</div>
+                <table id="tableUnion">
+                    <colgroup>
+                        <col width="*">
+                        <col width="75px">
+                        <col width="50px">
+                        <col width="75px">
+                    </colgroup>
+                    <tr><td></td><td colspan="2" class="tdCenter">유니온</td><td class="tdCenter">추가스펙</td></tr>
+                    <tr><td>${player.STATSSELECTER[player.mainstatSel]}</td><td><input type="number" class="inputstat" id="unionMainstat"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalMainstat"></td></tr>
+                    <tr><td>고정 ${player.STATSSELECTER[player.mainstatSel]}</td><td></td><td></td><td><input type="number" class="inputstat" id="additionalFixedMainstat"></td></tr>
+                    <tr><td>${player.STATSSELECTER[player.substat1Sel]}</td><td><input type="number" class="inputstat" id="unionSubstat1"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalSubstat1"></td></tr>
+                    <tr><td>${player.STATSSELECTER[player.substat2Sel]}</td><td><input type="number" class="inputstat" id="unionSubstat2"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalSubstat2"></td></tr>
+                    <tr><td>${player.ATTSELECTER[player.attmagSel]}</td><td><input type="number" class="inputstat" id="unionAttmag"></td><td> / 15 + </td><td><input type="number" class="inputstat" id="additionalAttmag"></td></tr>
+                    <tr><td>크리티컬 데미지</td><td><input type="number" class="inputstat" id="unionCritDMG"></td><td> / 20 + </td><td><input type="number" class="inputstat" id="additionalCritDMG"></td></tr>
+                    <tr><td>방어율 무시</td><td><input type="number" class="inputstat" id="unionPenetrate"></td><td> / 40 + </td><td><input type="number" class="inputstat" id="additionalPenetrate"></td></tr>
+                    <tr><td>보스 데미지</td><td><input type="number" class="inputstat" id="unionBossDMG"></td><td> / 40 + </td><td><input type="number" class="inputstat" id="additionalBossDMG"></td></tr>
+                    <tr><td>데미지</td><td></td><td></td><td><input type="number" class="inputstat" id="additionalDMG"></td></tr>
+                </table>
+                <hr class="line">
+                <div>
+                    <div class="additionalLink">블래스터 유니온 추가방무<input type="number" class="inputstat" id="blasterPenetrate"></div>
+                    <div class="additionalLink"><span class="link">제로 링크(방무 10%)<input type="checkbox" id="zeroLink"></span><span class="link">호영 링크(방무 10%)<input type="checkbox" id="hoyoungLink"></span><span>루미 링크(방무 15%)<input type="checkbox" id="lumiLink"></span></div>
+                </div>
+                <div>
+                    <button onclick="modifyConfirmUnion();">적용</button>
+                    <button onclick="modifyCancelUnion();">취소</button>
+                </div>
             </div>
         </div>
     </div>
@@ -450,7 +544,7 @@
                         </td>
                         <td>
                             <div class="characterSpec">
-                                <p><span>캐릭터명: ${player.characterName}</span><button>하이퍼스탯 설정</button><button>유니온 설정</button></p>
+                                <p><span>캐릭터명: ${player.characterName}</span><button onclick="modifyHyperstat();">하이퍼스탯 설정</button><button onclick="modifyUnion();">유니온/추가스펙 설정</button></p>
                                 <table id="playerSpecTable">
                                     <tr>
                                         <td>순수 ${player.STATSSELECTER[player.mainstatSel]}: ${player.mainstat} → ${playerCompare.mainstat}</td><td>${player.STATSSELECTER[player.mainstatSel]}%: ${player.mainstatPercent}% → ${playerCompare.mainstatPercent}%</td><td>총 ${player.STATSSELECTER[player.mainstatSel]}: ${player.totalmainstat} → ${playerCompare.totalmainstat}</td>

@@ -23,6 +23,7 @@ public class Character {
 
     private ArrayList<DataItem> equipeditem;
     private HyperstatVO hyperstat;
+    private DataItem union;
 
     private String characterName;
     private String characterImgUrl;
@@ -63,6 +64,7 @@ public class Character {
     public Character(){
         equipeditem = new ArrayList<DataItem>();
         hyperstat = new HyperstatVO();
+        union = new DataItem();
     }
 
     @SuppressWarnings("unchecked")
@@ -104,23 +106,12 @@ public class Character {
         this.totalattmag = player.getTotalattmag();
 
         this.hyperstat = player.getHyperstat();
-    
-        set = player.getSet().clone();
+        this.union = player.getUnion();
+        this.set = player.getSet().clone();
     }
 
     public Character(FindCharacterVO charVO, int level, ArrayList<DataItem> equipeditem){
-        this.characterName = charVO.getcharacterName();
-        this.mainstatSel = charVO.getmainstatSel();
-        this.substat1Sel = charVO.getsubstat1Sel();
-        this.substat2Sel = charVO.getsubstat2Sel();
-        this.attmagSel = charVO.getattmagSel();
-        this.equipeditem = equipeditem;
-        this.basemainstat = level*5 + 10;
-        this.basesubstat1 = 4;
-        this.basesubstat2 = 4;
-    }
-
-    public void characterSetter(FindCharacterVO charVO, int level, ArrayList<DataItem> equipeditem){
+        this();
         this.characterName = charVO.getcharacterName();
         this.mainstatSel = charVO.getmainstatSel();
         this.substat1Sel = charVO.getsubstat1Sel();
@@ -140,8 +131,9 @@ public class Character {
 
     public void printset(){
         for(int i : set){
-            System.out.println(i);
+            System.out.print(i + " ");
         }
+        System.out.println();
     }
     
     public void calculateSpec(){
@@ -182,13 +174,11 @@ public class Character {
         substat2 += basesubstat2;
         fixedMainstat += baseFixedMainstat;
 
-        //Apply Hyperstat
-        fixedMainstat += hyperstat.getFixedMainstat();
-        attmag += hyperstat.getAttmag();
-        bossDMG += hyperstat.getBossDMG();
-        critDMG += hyperstat.getCritDMG();
-        dmg += hyperstat.getDmg();
-        addPenetrate(hyperstat.getPenetrate());
+        //Apply union & additional specs
+        applyUnion();
+
+        //Apply hyperstat
+        applyHyperstat();
 
         //Apply set options
         applySetOption();
@@ -198,6 +188,27 @@ public class Character {
         totalsubstat1 = substat1 * (100 + substat1Percent + allstatPercent) / 100;
         totalsubstat2 = substat2 * (100 + substat2Percent + allstatPercent) / 100;
         totalattmag = attmag * (100 + attmagPercent) / 100;
+    }
+
+    private void applyHyperstat(){
+        fixedMainstat += hyperstat.getFixedMainstat();
+        attmag += hyperstat.getAttmag();
+        bossDMG += hyperstat.getBossDMG();
+        critDMG += hyperstat.getCritDMG();
+        dmg += hyperstat.getDmg();
+        addPenetrate(hyperstat.getPenetrate());
+    }
+
+    private void applyUnion(){
+        mainstat += union.getMainstat();
+        fixedMainstat += union.getFixedMainstat();
+        substat1 += union.getSubstat1();
+        substat2 += union.getSubstat2();
+        attmag += union.getAttmag();
+        critDMG += union.getCritDMG();
+        bossDMG += union.getBossDMG();
+        dmg += union.getDmg();
+        addPenetrate(union.getPenetrate());
     }
 
     public void print(){
