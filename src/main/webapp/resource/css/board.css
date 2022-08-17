@@ -68,19 +68,75 @@
     text-align: center;
 }
 
+.banner{
+    position: absolute;
+    background-color: white;
+    border-radius: 10px;
+    visibility: hidden;
+    display: none;
+}
+
 #bannerText{
     color: white;
 }
 
 #bannerModify{
-    position: absolute;
     top: 30%;
     left: 50%;
     transform: translate(-50%, -30%);
-    background-color: white;
-    border-radius: 10px;
     width: 300px;
     height: 500px;
+    
+}
+
+#bannerHyperstat{
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+}
+
+#bannerUnion{
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 570px;
+    height: 500px;
+    background-color: white;
+}
+
+.bannerTitle{
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#tableUnion{
+    line-height: 150%;
+    margin: auto;
+    margin-top: 10px;
+    width: 350px;
+}
+
+.tdCenter{
+    text-align: center;
+}
+
+.inputstat{
+    width: 70px;
+}
+
+.link{
+    margin-right: 30px;
+}
+
+.line{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.additionalLink{
+    margin-bottom: 10px;
 }
 
 *{
@@ -124,8 +180,9 @@ td.itemTable{
 }
 
 #itemDescripterOuter{
-    margin-left: 100px;
-    margin-top: 100px;
+    margin-left: 50px;
+    margin-right: 10px;
+    margin-top: 50px;
 }
 
 .itemDescripterTable{
@@ -166,7 +223,7 @@ td.itemTable{
 
 .itemDescription{
     display: block;
-    width: 400px;
+    width: 320px;
     margin-left: 50px;
     margin-right: 50px;
 }
@@ -181,6 +238,10 @@ td.itemTable{
     display: block;
 }
 
+#characterName{
+    font-weight: bold;
+}
+
 #mainContent{
     text-align: center;
     padding-top: 50px;
@@ -191,8 +252,8 @@ td.itemTable{
     margin: auto;
     border-radius: 20px;
     border: 2px solid black;
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 .characterSpecInner{
@@ -200,7 +261,9 @@ td.itemTable{
 }
 
 #playerSpecTable{
-    line-height: 150%;
+    line-height: 160%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
 .navFormSelect{
@@ -240,8 +303,21 @@ td.itemTable{
     font-size: 12px;
 }
 
+.playerSpecRow{
+    border-bottom: 1px solid #dddddd;
+}
+
 #playerSpecTable>tbody>tr>td{
     width: 250px;
+}
+
+#tableHyperStat{
+    margin: auto;
+    margin-top: 20px;
+}
+
+#buttonsHyperStat{
+    margin-top: 30px;
 }
 
 .modifyTable{
@@ -267,6 +343,14 @@ td.itemTable{
 
 .modifyInput{
     width: 75px;
+}
+
+#modifyAttmagSelect{
+    width: 75px;
+}
+
+#modifyButtons{
+    margin-top: 20px;
 }
 
 #selectItem{
@@ -296,6 +380,41 @@ td.itemTable{
     margin-left: 20px;
     margin-right: 20px;
     padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     border-radius: 20px;
     border: 2px dotted black;
+}
+
+#itemDescriptButtonOuter{
+    display: flex;
+    margin-top: 20px;
+}
+
+#itemDescriptButton{
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.specResult{
+    color: red;
+}
+
+.buttons{
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: 1px 1px 1px;
+    cursor : pointer;
+    width: 50px;
+}
+
+#buttonHyper{
+    margin-left: 200px;
+    width: 150px;
+}
+
+#buttonUnion{
+    margin-left: 10px;
+    width: 150px;
 }

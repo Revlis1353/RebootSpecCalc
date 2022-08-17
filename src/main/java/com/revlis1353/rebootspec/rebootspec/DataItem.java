@@ -22,6 +22,7 @@ public class DataItem{
     private int reqLev;
     @CsvBindByName
     private int mainstat;
+    private int fixedMainstat;
     @CsvBindByName
     private int substat1;
     @CsvBindByName
@@ -54,6 +55,11 @@ public class DataItem{
     private static final int STARFORCEWEAPATTACK200[] = {13, 13, 14, 14, 15, 16, 17, 34, 35, 36};
 
     public void applyStarforce(){
+        if(starforce == 0)
+            return;
+        else{
+            itemName = itemName + " " + starforce + "성 강화";
+        }
         int starforceAllstat = 0;
         int starforceAttmag = 0;
         
@@ -114,10 +120,12 @@ public class DataItem{
                 }
                 
                 if(i < 5){
-                    starforceAllstat += 2;
+                    if(modifyIndex != 15 && modifyIndex != 21)
+                        starforceAllstat += 2;
                 }
                 else if(i < 15){
-                    starforceAllstat += 3;
+                    if(modifyIndex != 15 && modifyIndex != 21)
+                        starforceAllstat += 3;
                 }
                 else if(i < 21){
                     starforceAllstat += starforceStatToAdd;
@@ -134,7 +142,9 @@ public class DataItem{
 
         mainstat += starforceAllstat;
         substat1 += starforceAllstat;
-        substat2 += starforceAllstat;
+        if(modifyIndex != 13 && modifyIndex != 1 && modifyIndex != 14 && modifyIndex != 19 && modifyIndex != 20 && modifyIndex != 22){
+            substat2 += starforceAllstat;
+        }
         attmag += starforceAttmag;
     }
 }

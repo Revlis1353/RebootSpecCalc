@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -47,8 +49,6 @@ public class WebController {
         statSel.put(2, "마력");
         return statSel;
     }
-
-    //TODO: Add checkbox to decide whether apply hyperstat or not
 
     @Bean
     public MessageSource messageSource() {
@@ -77,12 +77,15 @@ public class WebController {
         Crawler crawler = new Crawler(charVO);
         Character player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
         player.setCharacterImgUrl(crawler.getCharacterImgUrl());
-        player.setFixedMainstat(crawler.getArcaneMainstat());
+        player.setBaseFixedMainstat(crawler.getArcaneMainstat());
+        player.setHyperstat(crawler.getCharacterHyperstat());
 
         //index에서 form을 전달받아 characterName을 Crawler로 전달, 아이템 데이터를 받는다.
         //아이템 데이터를 정리하여 Character Data 객체에 저장 후 출력
         player.calculateSpec();
         model.addAttribute("player", player);
+
+        //player.printset();
 
         Character playerCompare = new Character(player);
         model.addAttribute("playerCompare", playerCompare);
@@ -93,7 +96,8 @@ public class WebController {
     public String spec(@ModelAttribute("player") Character player, Model model){
         if(player == null)
             return "redirect:index";
-        model.addAttribute("FindCharacterVO", new FindCharacterVO());
+        compareDamage(model);
+        //model.addAttribute("FindCharacterVO", new FindCharacterVO());
         return "spec";
     }
 
@@ -111,6 +115,7 @@ public class WebController {
 
         String targetFile = "csv/" + target + ".csv";
         ClassPathResource path = new ClassPathResource(targetFile);
+        
         List<DataItem> items = null;
 
         try {
@@ -118,8 +123,33 @@ public class WebController {
             .withType(DataItem.class)
             .build()
             .parse();
-            
+                
             model.addAttribute("items", items);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyWeapon")
+    public List<DataWeapon> loadWeaponAdditional(Model model) {
+
+        String targetFile = "csv/13additional.csv";
+        ClassPathResource path = new ClassPathResource(targetFile);
+        
+        List<DataWeapon> items = null;
+
+        try {
+            items = new CsvToBeanBuilder<DataWeapon>(new InputStreamReader(new FileInputStream(path.getFile().getAbsolutePath()), "utf-8"))
+            .withType(DataWeapon.class)
+            .build()
+            .parse();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -139,5 +169,90 @@ public class WebController {
         data.setIsModified(1);
         playerCompare.modifyItem(data);
         return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyApply")
+    public int applySpec(Model model) {
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+        playerCompare.clearEquipmentsModifyLog();
+        model.addAttribute("player", playerCompare);
+        Character newplayerCompare = new Character(playerCompare);
+        model.addAttribute("playerCompare", newplayerCompare);
+        return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyReset")
+    public int resetSpec(Model model) {
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = new Character(player);
+        model.addAttribute("playerCompare", playerCompare);
+        return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyHyperstat")
+    public int modifyHyperstat(@RequestBody HyperstatVO data, BindingResult result, Model model) {
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+
+        player.setHyperstat(data);
+        player.calculateSpec();
+
+        playerCompare.setHyperstat(data);
+        playerCompare.calculateSpec();
+        return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyUnion")
+    public int modifyUnion(@RequestBody DataItem data, BindingResult result, Model model) {
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+        
+        player.setUnion(data);
+        player.calculateSpec();
+
+        playerCompare.setUnion(data);
+        playerCompare.calculateSpec();
+        return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyMapleSoldier")
+    public int modifyMapleSoldier(@RequestBody Map<String, Integer> data, BindingResult result, Model model) {
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+
+        //int isActive = Integer.parseInt(data);
+        
+        player.setMapleSoldier(data.get("mapleSoldier"));
+        playerCompare.setMapleSoldier(data.get("mapleSoldier"));
+        return 0;
+    }
+
+    public void compareDamage(Model model){
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+
+        int playerStat = player.getTotalmainstat() * 4 + player.getTotalsubstat1() + player.getTotalsubstat2();
+        int playerCompareStat = playerCompare.getTotalmainstat() * 4 + playerCompare.getTotalsubstat1() + playerCompare.getTotalsubstat2();
+        float statRatio = playerCompareStat / (float)playerStat;
+        
+        float attmagRatio = playerCompare.getTotalattmag() / (float)player.getTotalattmag();
+
+        int playerDamage = 100 + player.getDmg() + player.getBossDMG();
+        int playerCompareDamage = 100 + playerCompare.getDmg() + playerCompare.getBossDMG();
+        float damageRatio = playerCompareDamage / (float)playerDamage;
+
+        float critRatio = (135 + playerCompare.getCritDMG()) / (float)(135 + player.getCritDMG()); 
+
+        float playerPenetrate = 100 - 300 * (100 - player.getPenetrate());
+        float playerComparePenetrate = 100 - 300 * (100 - playerCompare.getPenetrate());
+        float penetrateRatio = playerComparePenetrate / playerPenetrate;
+
+        float dmgResult = Math.round((statRatio * attmagRatio * damageRatio * critRatio * penetrateRatio - 1) * 10000) / 100.0f;
+        model.addAttribute("dmgResult", dmgResult);
     }
 }
