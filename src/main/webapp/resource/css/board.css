@@ -108,12 +108,13 @@
 
 .bannerTitle{
     margin-top: 20px;
+    font-weight: bold;
 }
 
 #tableUnion{
     line-height: 150%;
     margin: auto;
-    margin-top: 30px;
+    margin-top: 10px;
     width: 350px;
 }
 
@@ -222,7 +223,7 @@ td.itemTable{
 
 .itemDescription{
     display: block;
-    width: 400px;
+    width: 320px;
     margin-left: 50px;
     margin-right: 50px;
 }
@@ -235,6 +236,10 @@ td.itemTable{
     overflow: auto;
     float: left;
     display: block;
+}
+
+#characterName{
+    font-weight: bold;
 }
 
 #mainContent{
@@ -256,7 +261,9 @@ td.itemTable{
 }
 
 #playerSpecTable{
-    line-height: 150%;
+    line-height: 160%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
 .navFormSelect{
@@ -296,8 +303,21 @@ td.itemTable{
     font-size: 12px;
 }
 
+.playerSpecRow{
+    border-bottom: 1px solid #dddddd;
+}
+
 #playerSpecTable>tbody>tr>td{
     width: 250px;
+}
+
+#tableHyperStat{
+    margin: auto;
+    margin-top: 20px;
+}
+
+#buttonsHyperStat{
+    margin-top: 30px;
 }
 
 .modifyTable{
@@ -323,6 +343,14 @@ td.itemTable{
 
 .modifyInput{
     width: 75px;
+}
+
+#modifyAttmagSelect{
+    width: 75px;
+}
+
+#modifyButtons{
+    margin-top: 20px;
 }
 
 #selectItem{
@@ -352,6 +380,41 @@ td.itemTable{
     margin-left: 20px;
     margin-right: 20px;
     padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     border-radius: 20px;
     border: 2px dotted black;
+}
+
+#itemDescriptButtonOuter{
+    display: flex;
+    margin-top: 20px;
+}
+
+#itemDescriptButton{
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.specResult{
+    color: red;
+}
+
+.buttons{
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: 1px 1px 1px;
+    cursor : pointer;
+    width: 50px;
+}
+
+#buttonHyper{
+    margin-left: 200px;
+    width: 150px;
+}
+
+#buttonUnion{
+    margin-left: 10px;
+    width: 150px;
 }

@@ -79,8 +79,6 @@
             document.getElementById("modifyMainstat").value = "";
             document.getElementById("modifySubstat1").value = "";
             document.getElementById("modifySubstat2").value = "";
-            if(modifyIndex != 13)
-                document.getElementById("modifyAttmag").value = "";
             document.getElementById("modifyallstatPercent").value = "";
             document.getElementById("modifyStarforce").value = "";
             document.getElementById("modifyPotential0").value = "";
@@ -405,24 +403,39 @@
             var datatoSend = {"mainstat": mainstat, "fixedMainstat": fixedMainstat, "substat1": substat1, "substat2": substat2, 
                             "attmag": attmag, "bossDMG": bossDMG, "critDMG": critDMG, "dmg": dmg, "penetrate": penetrate};
 
+            var mapleSoldier = document.getElementById("mapleSoldier").checked? 1 : 0;
+            var dataMapleSoldier = JSON.stringify({"mapleSoldier": mapleSoldier});
+
             $.ajax({
-                url: "/spec/modifyUnion",
+                url: "/spec/modifyMapleSoldier",
                 type: "POST",
                 contentType: 'application/json',
-                data: JSON.stringify(datatoSend),
+                data: dataMapleSoldier,
                 success: function(data){
-                    var div1 = document.getElementById("bannerFull");
-                    div1.style.visibility = "hidden";
-                    var div2 = document.getElementById("bannerUnion");
-                    div2.style.visibility = "hidden";
-                    div2.style.display = "none";
-                    $("#mainContent").load("/spec #mainContentInner");
+                    $.ajax({
+                        url: "/spec/modifyUnion",
+                        type: "POST",
+                        contentType: 'application/json',
+                        data: JSON.stringify(datatoSend),
+                        success: function(data){
+                            var div1 = document.getElementById("bannerFull");
+                            div1.style.visibility = "hidden";
+                            var div2 = document.getElementById("bannerUnion");
+                            div2.style.visibility = "hidden";
+                            div2.style.display = "none";
+                            $("#mainContent").load("/spec #mainContentInner");
+                        },
+                        error: function(){
+                            alert("err");
+                        }
+                    });
                 },
                 error: function(){
                     alert("err");
                 }
             });
         }
+
         function modifyCancelUnion(){
             var div1 = document.getElementById("bannerFull");
             div1.style.visibility = "hidden";
@@ -462,7 +475,7 @@
                         <td>올스탯%: </td><td></td><td></td><td><input type="number" class="modifyInput" id="modifyallstatPercent"></td>
                     </tr>
                 </table>    
-                <br><hr class="line"><br>
+                <hr class="line">
                 <div>잠재능력</div>
                 <table id="modifyPotentialTable">
                     <tr>
@@ -480,14 +493,14 @@
                         </c:forEach>
                     </tr>
                 </table>
-                <div>
-                    <button onclick="modifyConfirm();">apply</button>
-                    <button onclick="modifyCancel();">cancel</button>
+                <div id="modifyButtons">
+                    <button class="buttons" onclick="modifyConfirm();">확인</button>
+                    <button class="buttons" onclick="modifyCancel();">취소</button>
                 </div>
             </div>
             <div id="bannerHyperstat" class="banner">
                 <div class="bannerTitle">하이퍼스탯 설정</div>
-                <table>
+                <table id="tableHyperStat">
                     <tr><td>${player.STATSSELECTER[player.mainstatSel]}</td><td><input type="number" min="0" max="15" onchange="onchangeHypermainstat(this);"></td><td>→</td><td id="hypermainstat">0</td><td></td></tr>
                     <tr><td>크리 데미지</td><td><input type="number" min="0" max="15" onchange="onchangeHyperCritDMG(this);"></td><td>→</td><td id="hyperCritDMG">0</td><td>%</td></tr>
                     <tr><td>방어율 무시</td><td><input type="number" min="0" max="15" onchange="onchangeHyperPenetrate(this);"></td><td>→</td><td id="hyperPenetrate">0</td><td>%</td></tr>
@@ -495,9 +508,9 @@
                     <tr><td>보스데미지</td><td><input type="number" min="0" max="15" onchange="onchangeHyperBossDMG(this);"></td><td>→</td><td id="hyperBossDMG">0</td><td>%</td></tr>
                     <tr><td>공격력 / 마력</td><td><input type="number" min="0" max="15" onchange="onchangeHyperAttmag(this);"></td><td>→</td><td id="hyperAttmag">0</td><td></td></tr>
                 </table>
-                <div>
-                    <button onclick="modifyConfirmHyperstat();">확인</button>
-                    <button onclick="modifyCancelHyperstat();">취소</button>
+                <div id="buttonsHyperStat">
+                    <button class="buttons" onclick="modifyConfirmHyperstat();">확인</button>
+                    <button class="buttons" onclick="modifyCancelHyperstat();">취소</button>
                 </div>
             </div>
             <div id="bannerUnion" class="banner">
@@ -509,7 +522,7 @@
                         <col width="50px">
                         <col width="75px">
                     </colgroup>
-                    <tr><td></td><td colspan="2" class="tdCenter">유니온</td><td class="tdCenter">추가스펙</td></tr>
+                    <tr><td></td><td class="tdCenter">유니온</td><td></td><td class="tdCenter">추가스펙</td></tr>
                     <tr><td>${player.STATSSELECTER[player.mainstatSel]}</td><td><input type="number" class="inputstat" id="unionMainstat"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalMainstat"></td></tr>
                     <tr><td>고정 ${player.STATSSELECTER[player.mainstatSel]}</td><td></td><td></td><td><input type="number" class="inputstat" id="additionalFixedMainstat"></td></tr>
                     <tr><td>${player.STATSSELECTER[player.substat1Sel]}</td><td><input type="number" class="inputstat" id="unionSubstat1"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalSubstat1"></td></tr>
@@ -522,12 +535,13 @@
                 </table>
                 <hr class="line">
                 <div>
-                    <div class="additionalLink">블래스터 유니온 추가방무<input type="number" class="inputstat" id="blasterPenetrate"></div>
+                    <div class="additionalLink">메이플 용사 적용 <input type="checkbox" id="mapleSoldier"></div>
+                    <div class="additionalLink">블래스터 유니온 추가방무 <input type="number" class="inputstat" id="blasterPenetrate"></div>
                     <div class="additionalLink"><span class="link">제로 링크(방무 10%)<input type="checkbox" id="zeroLink"></span><span class="link">호영 링크(방무 10%)<input type="checkbox" id="hoyoungLink"></span><span>루미 링크(방무 15%)<input type="checkbox" id="lumiLink"></span></div>
                 </div>
                 <div>
-                    <button onclick="modifyConfirmUnion();">적용</button>
-                    <button onclick="modifyCancelUnion();">취소</button>
+                    <button class="buttons" onclick="modifyConfirmUnion();">적용</button>
+                    <button class="buttons" onclick="modifyCancelUnion();">취소</button>
                 </div>
             </div>
         </div>
@@ -580,23 +594,23 @@
                         </td>
                         <td>
                             <div class="characterSpec">
-                                <p><span>캐릭터명: ${player.characterName}</span><button onclick="modifyHyperstat();">하이퍼스탯 설정</button><button onclick="modifyUnion();">유니온/추가스펙 설정</button></p>
+                                <p><span id="characterName">캐릭터명: ${player.characterName}</span><button class="buttons" id="buttonHyper" onclick="modifyHyperstat();">하이퍼스탯 설정</button><button class="buttons" id="buttonUnion" onclick="modifyUnion();">유니온/추가스펙 설정</button></p>
                                 <table id="playerSpecTable">
-                                    <tr>
+                                    <tr class="playerSpecRow">
                                         <td>순수 ${player.STATSSELECTER[player.mainstatSel]}: ${player.mainstat} → ${playerCompare.mainstat}</td><td>${player.STATSSELECTER[player.mainstatSel]}%: ${player.mainstatPercent}% → ${playerCompare.mainstatPercent}%</td><td>총 ${player.STATSSELECTER[player.mainstatSel]}: ${player.totalmainstat} → ${playerCompare.totalmainstat}</td>
-                                    </tr><tr>
+                                    </tr><tr class="playerSpecRow">
                                         <td>순수 ${player.STATSSELECTER[player.substat1Sel]}: ${player.substat1} → ${playerCompare.substat1}</td><td>${player.STATSSELECTER[player.substat1Sel]}%: ${player.substat1Percent}% → ${playerCompare.substat1Percent}%</td><td>총 ${player.STATSSELECTER[player.substat1Sel]}: ${player.totalsubstat1} → ${playerCompare.totalsubstat1}</td>
                                     <c:if test="${player.substat2Sel >= 0}">
-                                        </tr><tr>
+                                        </tr><tr class="playerSpecRow">
                                             <td>순수 ${player.STATSSELECTER[player.substat2Sel]}: ${player.substat2} → ${playerCompare.substat2}</td><td>${player.STATSSELECTER[player.substat2Sel]}%: ${player.substat2Percent}% → ${playerCompare.substat2Percent}%</td><td>총 ${player.STATSSELECTER[player.substat2Sel]}: ${player.totalsubstat2} → ${playerCompare.totalsubstat2}</td>
                                     </c:if>
-                                    </tr><tr>
+                                    </tr><tr class="playerSpecRow">
                                         <td>고정 ${player.STATSSELECTER[player.mainstatSel]}: ${player.fixedMainstat} → ${playerCompare.fixedMainstat}</td><td>올스탯%: ${player.allstatPercent}% → ${playerCompare.allstatPercent}%</td>
-                                    </tr><tr>
+                                    </tr><tr class="playerSpecRow">
                                         <td>${player.ATTSELECTER[player.attmagSel]}: ${player.attmag} → ${playerCompare.attmag}</td><td>${player.ATTSELECTER[player.attmagSel]}%: ${player.attmagPercent}% → ${playerCompare.attmagPercent}%</td><td>총 ${player.ATTSELECTER[player.attmagSel]}: ${player.totalattmag} → ${playerCompare.totalattmag}</td>
-                                    </tr><tr>
+                                    </tr><tr class="playerSpecRow">
                                         <td colspan="2">보스 몬스터 공격 시 데미지: ${player.bossDMG}% → ${playerCompare.bossDMG}%</td><td>데미지: ${player.dmg}% → ${playerCompare.dmg}%</td>
-                                    </tr><tr>
+                                    </tr><tr class="playerSpecRow">
                                         <td colspan="2">몬스터 방어율 무시: ${player.penetrate}% → ${playerCompare.penetrate}%</td><td>크리티컬 데미지: ${player.critDMG}% → ${playerCompare.critDMG}%</td>
                                     </tr><tr>
                                         <td class="specResult">예상 화력 증가량: ${dmgResult}%</td>
@@ -607,9 +621,9 @@
                     </tr>
                 </table>
             </div>
-            <div id="buttons">
-                <button onclick="modifyApply();">적용</button>
-                <button onclick="modifyReset();">초기화</button>
+            <div id="applybuttons">
+                <button class="buttons" onclick="modifyApply();">적용</button>
+                <button class="buttons" onclick="modifyReset();">초기화</button>
             </div>
             <div id="itemDescripterOuter">
                 <table class="itemDescripterTable">
@@ -652,10 +666,7 @@
                                         <div>크리티컬 데미지: ${playerCompare.equipeditem[count].critDMG}%</div>
                                         <div>보스 몬스터 공격시 데미지: ${playerCompare.equipeditem[count].bossDMG}%</div>
                                         <div>몬스터 방어율 무시: ${playerCompare.equipeditem[count].penetrate}%</div>
-                                        <button onclick="modify('${count}');">수정</button>
-                                        <%-- TODO: If user modify items, these item's border color will change to red --%>
-                                        <%-- TODO: If user press the button, change items image. Finally 'apply' button will recalculate stats. --%>
-                                        <%-- TODO: 'Compare to previous stats' function will useful. --%>
+                                        <div id="itemDescriptButtonOuter"><button id="itemDescriptButton" class="buttons" onclick="modify('${count}');">수정</button></div>
                                     </div>
                                 </div>
                             </c:forEach>

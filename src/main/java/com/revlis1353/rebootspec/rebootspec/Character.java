@@ -59,6 +59,8 @@ public class Character {
     private int totalsubstat2;
     private int totalattmag;
 
+    private int mapleSoldier;
+
     private int set[];
 
     public Character(){
@@ -108,6 +110,8 @@ public class Character {
         this.hyperstat = player.getHyperstat();
         this.union = player.getUnion();
         this.set = player.getSet().clone();
+
+        this.mapleSoldier = player.getMapleSoldier();
     }
 
     public Character(FindCharacterVO charVO, int level, ArrayList<DataItem> equipeditem){
@@ -118,7 +122,7 @@ public class Character {
         this.substat2Sel = charVO.getsubstat2Sel();
         this.attmagSel = charVO.getattmagSel();
         this.equipeditem = equipeditem;
-        this.basemainstat = level*5 + 10;
+        this.basemainstat = level*5 + 18;
         this.basesubstat1 = 4;
         this.basesubstat2 = 4;
     }
@@ -173,6 +177,10 @@ public class Character {
         substat1 += basesubstat1;
         substat2 += basesubstat2;
         fixedMainstat += baseFixedMainstat;
+
+        if(mapleSoldier == 1){
+            mainstat += 15 * (basemainstat - 18) / 100;
+        }
 
         //Apply union & additional specs
         applyUnion();

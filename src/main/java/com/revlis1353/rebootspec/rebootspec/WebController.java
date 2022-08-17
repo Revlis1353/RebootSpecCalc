@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -206,7 +207,7 @@ public class WebController {
 
     @ResponseBody
     @RequestMapping("/spec/modifyUnion")
-    public int modifyHyperstat(@RequestBody DataItem data, BindingResult result, Model model) {
+    public int modifyUnion(@RequestBody DataItem data, BindingResult result, Model model) {
         Character player = (Character)model.getAttribute("player");
         Character playerCompare = (Character)model.getAttribute("playerCompare");
         
@@ -215,6 +216,19 @@ public class WebController {
 
         playerCompare.setUnion(data);
         playerCompare.calculateSpec();
+        return 0;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyMapleSoldier")
+    public int modifyMapleSoldier(@RequestBody Map<String, Integer> data, BindingResult result, Model model) {
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+
+        //int isActive = Integer.parseInt(data);
+        
+        player.setMapleSoldier(data.get("mapleSoldier"));
+        playerCompare.setMapleSoldier(data.get("mapleSoldier"));
         return 0;
     }
 
