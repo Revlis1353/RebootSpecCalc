@@ -179,8 +179,9 @@ td.itemTable{
 }
 
 #itemDescripterOuter{
-    margin-left: 100px;
-    margin-top: 100px;
+    margin-left: 50px;
+    margin-right: 10px;
+    margin-top: 50px;
 }
 
 .itemDescripterTable{
@@ -246,8 +247,8 @@ td.itemTable{
     margin: auto;
     border-radius: 20px;
     border: 2px solid black;
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 .characterSpecInner{

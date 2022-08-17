@@ -120,10 +120,12 @@ public class DataItem{
                 }
                 
                 if(i < 5){
-                    starforceAllstat += 2;
+                    if(modifyIndex != 15 && modifyIndex != 21)
+                        starforceAllstat += 2;
                 }
                 else if(i < 15){
-                    starforceAllstat += 3;
+                    if(modifyIndex != 15 && modifyIndex != 21)
+                        starforceAllstat += 3;
                 }
                 else if(i < 21){
                     starforceAllstat += starforceStatToAdd;
@@ -140,7 +142,9 @@ public class DataItem{
 
         mainstat += starforceAllstat;
         substat1 += starforceAllstat;
-        substat2 += starforceAllstat;
+        if(modifyIndex != 13 && modifyIndex != 1 && modifyIndex != 14 && modifyIndex != 19 && modifyIndex != 20 && modifyIndex != 22){
+            substat2 += starforceAllstat;
+        }
         attmag += starforceAttmag;
     }
 }

@@ -8,6 +8,7 @@
     <script>
 
         var items = null;
+        var weaponAdditional = null;
         var modifyIndex = 0;
 
         function clickimage(i){
@@ -42,6 +43,23 @@
                             itemhtml += "<option value= '" + index +"'>"+ data[index].itemName + "</option>";
                         }
                         document.getElementById("selectItem").innerHTML = itemhtml;
+                        
+                        if(i == 13){
+                            document.getElementById("modifyCellAttmag").innerHTML = "<select id='modifyAttmagSelect'></select>";
+                            $.ajax({
+                                url: "/spec/modifyWeapon",
+                                type: "POST",
+                                success: function(data){
+                                    weaponAdditional = data;
+                                },
+                                error: function(){
+                                    alert("err");
+                                }
+                            });
+                        }
+                        else{
+                            document.getElementById("modifyCellAttmag").innerHTML = "<input type='number' class='modifyInput' id='modifyAttmag'>";
+                        }
                     }
                     var div1 = document.getElementById("bannerFull");
                     div1.style.visibility = "visible";
@@ -61,7 +79,8 @@
             document.getElementById("modifyMainstat").value = "";
             document.getElementById("modifySubstat1").value = "";
             document.getElementById("modifySubstat2").value = "";
-            document.getElementById("modifyAttmag").value = "";
+            if(modifyIndex != 13)
+                document.getElementById("modifyAttmag").value = "";
             document.getElementById("modifyallstatPercent").value = "";
             document.getElementById("modifyStarforce").value = "";
             document.getElementById("modifyPotential0").value = "";
@@ -111,7 +130,12 @@
             var mainstat = Number(document.getElementById("mainstat").innerText) + Number($("#modifyMainstat").val());
             var substat1 = Number(document.getElementById("substat1").innerText) + Number($("#modifySubstat1").val());
             var substat2 = Number(document.getElementById("substat2").innerText) + Number($("#modifySubstat2").val());
-            var attmag = Number(document.getElementById("attmag").innerText) + Number($("#modifyAttmag").val());
+            if(modifyIndex == 13){
+                var attmag = Number(document.getElementById("attmag").innerText) + Number($("#modifyAttmagSelect").val());
+            }
+            else{
+                var attmag = Number(document.getElementById("attmag").innerText) + Number($("#modifyAttmag").val());
+            }
             var pureattmag = Number(document.getElementById("attmag").innerText);
             var allstatPercent = Number($("#modifyallstatPercent").val());
             var reqLev = items[parseInt($('#selectItem').val())].reqLev;
@@ -119,11 +143,12 @@
             var itemName = items[parseInt($('#selectItem').val())].itemName;
             var itemImg = items[parseInt($('#selectItem').val())].itemImg;
             var penetrate = items[parseInt($('#selectItem').val())].penetrate;
+            var bossDMG = items[parseInt($('#selectItem').val())].bossDMG;
             var set = items[parseInt($('#selectItem').val())].set;
 
             var datatoSend = {"itemName": itemName, "modifyIndex": modifyIndex, "mainstat": mainstat, "substat1": substat1, "substat2": substat2,
                              "attmag": attmag, "allstatPercent": allstatPercent, "penetrate": penetrate, "pureattmag": pureattmag, "reqLev": reqLev, "starforce": starforce,
-                            "itemImg": itemImg, "set":set};
+                            "itemImg": itemImg, "bossDMG":bossDMG, "set":set};
             
             for(var i = 0; i < 3; i++){
                 var potentialData = $('#modifyPotential' + i).val();
@@ -166,11 +191,20 @@
             }
             var selectVal = $('#selectItem').val();
             if(selectVal < 0) return;
-            console.log("Select Changed!: " + selectVal);
             document.getElementById("mainstat").innerText = items[parseInt(selectVal)].mainstat;
             document.getElementById("substat1").innerText = items[parseInt(selectVal)].substat1;
             document.getElementById("substat2").innerText = items[parseInt(selectVal)].substat2;
             document.getElementById("attmag").innerText = items[parseInt(selectVal)].attmag;
+
+            if(modifyIndex == 13){
+                var inner = "<option value='0'>0</option>";
+                inner += "<option value='" + weaponAdditional[parseInt(selectVal)].additional5 + "'>" + weaponAdditional[parseInt(selectVal)].additional5 + "</option>";
+                inner += "<option value='" + weaponAdditional[parseInt(selectVal)].additional4 + "'>" + weaponAdditional[parseInt(selectVal)].additional4 + "</option>";
+                inner += "<option value='" + weaponAdditional[parseInt(selectVal)].additional3 + "'>" + weaponAdditional[parseInt(selectVal)].additional3 + "</option>";
+                inner += "<option value='" + weaponAdditional[parseInt(selectVal)].additional2 + "'>" + weaponAdditional[parseInt(selectVal)].additional2 + "</option>";
+                inner += "<option value='" + weaponAdditional[parseInt(selectVal)].additional1 + "'>" + weaponAdditional[parseInt(selectVal)].additional1 + "</option>";
+                document.getElementById("modifyAttmagSelect").innerHTML = inner;
+            }
         }
 
         function navibtn1(){
@@ -422,7 +456,7 @@
                         <td>${player.STATSSELECTER[player.substat2Sel]}: </td><td id="substat2">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifySubstat2"></td>
                     </tr>
                     <tr>
-                        <td>${player.ATTSELECTER[player.attmagSel]}: </td><td id="attmag">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifyAttmag"></td>
+                        <td>${player.ATTSELECTER[player.attmagSel]}: </td><td id="attmag">0</td><td> + </td><td id="modifyCellAttmag"></td>
                     </tr>
                     <tr>
                         <td>올스탯%: </td><td></td><td></td><td><input type="number" class="modifyInput" id="modifyallstatPercent"></td>
@@ -498,6 +532,7 @@
             </div>
         </div>
     </div>
+    <%-- 
     <div class="navi">
         <div>REBOOT Spec Calculator</div>
         <div class="navibutton" id="navibtn1" onclick="navibtn1();">다른 캐릭터 검색</div>
@@ -532,6 +567,7 @@
         <div class="navibutton" id="navibtn2" onclick="navibtn2();">ABOUT</div>
 
     </div>
+    --%>
     <div id="mainContent">
         <div id="mainContentInner">
             <div class="characterSpecOuter">
@@ -561,7 +597,9 @@
                                     </tr><tr>
                                         <td colspan="2">보스 몬스터 공격 시 데미지: ${player.bossDMG}% → ${playerCompare.bossDMG}%</td><td>데미지: ${player.dmg}% → ${playerCompare.dmg}%</td>
                                     </tr><tr>
-                                        <td colspan="2">몬스터 방어율 무시: ${player.penetrate}% → ${playerCompare.penetrate}%</td><td>크리티컬 데미지: ${player.critDMG} → ${playerCompare.critDMG}%</td>
+                                        <td colspan="2">몬스터 방어율 무시: ${player.penetrate}% → ${playerCompare.penetrate}%</td><td>크리티컬 데미지: ${player.critDMG}% → ${playerCompare.critDMG}%</td>
+                                    </tr><tr>
+                                        <td class="specResult">예상 화력 증가량: ${dmgResult}%</td>
                                     </tr>
                                 </table>
                             </div>

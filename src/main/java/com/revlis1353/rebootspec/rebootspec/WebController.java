@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +48,6 @@ public class WebController {
         statSel.put(2, "마력");
         return statSel;
     }
-
-    //TODO: Add checkbox to decide whether apply hyperstat or not
 
     @Bean
     public MessageSource messageSource() {
@@ -96,7 +95,8 @@ public class WebController {
     public String spec(@ModelAttribute("player") Character player, Model model){
         if(player == null)
             return "redirect:index";
-        model.addAttribute("FindCharacterVO", new FindCharacterVO());
+        compareDamage(model);
+        //model.addAttribute("FindCharacterVO", new FindCharacterVO());
         return "spec";
     }
 
@@ -114,6 +114,7 @@ public class WebController {
 
         String targetFile = "csv/" + target + ".csv";
         ClassPathResource path = new ClassPathResource(targetFile);
+        
         List<DataItem> items = null;
 
         try {
@@ -121,8 +122,33 @@ public class WebController {
             .withType(DataItem.class)
             .build()
             .parse();
-            
+                
             model.addAttribute("items", items);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
+
+    @ResponseBody
+    @RequestMapping("/spec/modifyWeapon")
+    public List<DataWeapon> loadWeaponAdditional(Model model) {
+
+        String targetFile = "csv/13additional.csv";
+        ClassPathResource path = new ClassPathResource(targetFile);
+        
+        List<DataWeapon> items = null;
+
+        try {
+            items = new CsvToBeanBuilder<DataWeapon>(new InputStreamReader(new FileInputStream(path.getFile().getAbsolutePath()), "utf-8"))
+            .withType(DataWeapon.class)
+            .build()
+            .parse();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -141,7 +167,6 @@ public class WebController {
         data.applyStarforce();
         data.setIsModified(1);
         playerCompare.modifyItem(data);
-        //playerCompare.printset();
         return 0;
     }
 
@@ -193,4 +218,27 @@ public class WebController {
         return 0;
     }
 
+    public void compareDamage(Model model){
+        Character player = (Character)model.getAttribute("player");
+        Character playerCompare = (Character)model.getAttribute("playerCompare");
+
+        int playerStat = player.getTotalmainstat() * 4 + player.getTotalsubstat1() + player.getTotalsubstat2();
+        int playerCompareStat = playerCompare.getTotalmainstat() * 4 + playerCompare.getTotalsubstat1() + playerCompare.getTotalsubstat2();
+        float statRatio = playerCompareStat / (float)playerStat;
+        
+        float attmagRatio = playerCompare.getTotalattmag() / (float)player.getTotalattmag();
+
+        int playerDamage = 100 + player.getDmg() + player.getBossDMG();
+        int playerCompareDamage = 100 + playerCompare.getDmg() + playerCompare.getBossDMG();
+        float damageRatio = playerCompareDamage / (float)playerDamage;
+
+        float critRatio = (135 + playerCompare.getCritDMG()) / (float)(135 + player.getCritDMG()); 
+
+        float playerPenetrate = 100 - 300 * (100 - player.getPenetrate());
+        float playerComparePenetrate = 100 - 300 * (100 - playerCompare.getPenetrate());
+        float penetrateRatio = playerComparePenetrate / playerPenetrate;
+
+        float dmgResult = Math.round((statRatio * attmagRatio * damageRatio * critRatio * penetrateRatio - 1) * 10000) / 100.0f;
+        model.addAttribute("dmgResult", dmgResult);
+    }
 }
