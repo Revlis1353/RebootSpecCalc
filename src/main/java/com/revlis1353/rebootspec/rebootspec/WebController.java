@@ -119,7 +119,7 @@ public class WebController {
         List<DataItem> items = null;
 
         try {
-            items = new CsvToBeanBuilder<DataItem>(new InputStreamReader(new FileInputStream(path.getFile().getAbsolutePath()), "utf-8"))
+            items = new CsvToBeanBuilder<DataItem>(new InputStreamReader(path.getInputStream(), "utf-8"))
             .withType(DataItem.class)
             .build()
             .parse();
@@ -146,7 +146,7 @@ public class WebController {
         List<DataWeapon> items = null;
 
         try {
-            items = new CsvToBeanBuilder<DataWeapon>(new InputStreamReader(new FileInputStream(path.getFile().getAbsolutePath()), "utf-8"))
+            items = new CsvToBeanBuilder<DataWeapon>(new InputStreamReader(path.getInputStream(), "utf-8"))
             .withType(DataWeapon.class)
             .build()
             .parse();
