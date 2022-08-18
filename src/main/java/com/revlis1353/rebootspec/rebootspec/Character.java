@@ -194,7 +194,12 @@ public class Character {
         //Apply percent options
         totalmainstat = fixedMainstat + mainstat * (100 + mainstatPercent + allstatPercent) / 100;
         totalsubstat1 = substat1 * (100 + substat1Percent + allstatPercent) / 100;
-        totalsubstat2 = substat2 * (100 + substat2Percent + allstatPercent) / 100;
+        if(substat2Sel >= 0){
+            totalsubstat2 = substat2 * (100 + substat2Percent + allstatPercent) / 100;
+        }
+        else{
+            totalsubstat2 = 0;
+        }
         totalattmag = attmag * (100 + attmagPercent) / 100;
     }
 
