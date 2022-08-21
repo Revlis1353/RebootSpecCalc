@@ -280,7 +280,7 @@ public class Crawler{
                         }
                         continue;
                     }
-                    else if(potential[i].equals("데미지")){
+                    else if(potential[i].equals("데미지") && potential[i+1].equals(":")){
                         item.setDmg(item.getDmg() + Integer.parseInt(StringUtils.chop(potential[i+2])));
                         continue;
                     }
