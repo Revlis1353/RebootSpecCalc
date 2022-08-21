@@ -465,9 +465,11 @@
                     <tr>
                         <td>${player.STATSSELECTER[player.substat1Sel]}: </td><td id="substat1">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifySubstat1"></td>
                     </tr>
-                    <tr>
-                        <td>${player.STATSSELECTER[player.substat2Sel]}: </td><td id="substat2">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifySubstat2"></td>
-                    </tr>
+                    <c:if test="${player.substat2Sel >= 0}">
+                        <tr>
+                            <td>${player.STATSSELECTER[player.substat2Sel]}: </td><td id="substat2">0</td><td> + </td><td><input type="number" class="modifyInput" id="modifySubstat2"></td>
+                        </tr>
+                    </c:if>
                     <tr>
                         <td>${player.ATTSELECTER[player.attmagSel]}: </td><td id="attmag">0</td><td> + </td><td id="modifyCellAttmag"></td>
                     </tr>
@@ -526,7 +528,7 @@
                     <tr><td>${player.STATSSELECTER[player.mainstatSel]}</td><td><input type="number" class="inputstat" id="unionMainstat"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalMainstat"></td></tr>
                     <tr><td>고정 ${player.STATSSELECTER[player.mainstatSel]}</td><td></td><td></td><td><input type="number" class="inputstat" id="additionalFixedMainstat"></td></tr>
                     <tr><td>${player.STATSSELECTER[player.substat1Sel]}</td><td><input type="number" class="inputstat" id="unionSubstat1"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalSubstat1"></td></tr>
-                    <tr><td>${player.STATSSELECTER[player.substat2Sel]}</td><td><input type="number" class="inputstat" id="unionSubstat2"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalSubstat2"></td></tr>
+                    <c:if test="${player.substat2Sel >= 0}"><tr><td>${player.STATSSELECTER[player.substat2Sel]}</td><td><input type="number" class="inputstat" id="unionSubstat2"></td><td> / 75 + </td><td><input type="number" class="inputstat" id="additionalSubstat2"></td></tr></c:if>
                     <tr><td>${player.ATTSELECTER[player.attmagSel]}</td><td><input type="number" class="inputstat" id="unionAttmag"></td><td> / 15 + </td><td><input type="number" class="inputstat" id="additionalAttmag"></td></tr>
                     <tr><td>크리티컬 데미지</td><td><input type="number" class="inputstat" id="unionCritDMG"></td><td> / 20 + </td><td><input type="number" class="inputstat" id="additionalCritDMG"></td></tr>
                     <tr><td>방어율 무시</td><td><input type="number" class="inputstat" id="unionPenetrate"></td><td> / 40 + </td><td><input type="number" class="inputstat" id="additionalPenetrate"></td></tr>
