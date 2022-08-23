@@ -74,21 +74,31 @@ public class WebController {
         new CharacterValidator().validate(charVO, result);
         if(result.hasErrors()) return "index";
 
-        Crawler crawler = new Crawler(charVO);
-        Character player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
-        player.setCharacterImgUrl(crawler.getCharacterImgUrl());
-        player.setBaseFixedMainstat(crawler.getArcaneMainstat());
-        player.setHyperstat(crawler.getCharacterHyperstat());
+        charVO.reduce1Selector();
 
-        //index에서 form을 전달받아 characterName을 Crawler로 전달, 아이템 데이터를 받는다.
-        //아이템 데이터를 정리하여 Character Data 객체에 저장 후 출력
-        player.calculateSpec();
-        model.addAttribute("player", player);
+        Crawler crawler;
+        Character player;
 
-        //player.printset();
+        try {
+            crawler = new Crawler(charVO);
+            player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
 
-        Character playerCompare = new Character(player);
-        model.addAttribute("playerCompare", playerCompare);
+            player.setCharacterImgUrl(crawler.getCharacterImgUrl());
+            player.setBaseFixedMainstat(crawler.getArcaneMainstat());
+            player.setHyperstat(crawler.getCharacterHyperstat());
+
+            player.calculateSpec();
+            model.addAttribute("player", player);
+
+            Character playerCompare = new Character(player);
+            model.addAttribute("playerCompare", playerCompare);
+            
+        } catch (Exception e) {
+            charVO.add1Selector();
+            result.rejectValue("characterName", "openInformation");
+            return "index";
+        }
+       
         return "redirect:spec";
     }
 
