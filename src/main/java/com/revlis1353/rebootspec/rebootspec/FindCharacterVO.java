@@ -35,15 +35,15 @@ public class FindCharacterVO{
     }
 
     public void setmainstatSel(int mainstatSel) {
-        this.mainstatSel = mainstatSel - 1;
+        this.mainstatSel = mainstatSel;
     }
 
     public void setsubstat1Sel(int substat1Sel) {
-        this.substat1Sel = substat1Sel - 1;
+        this.substat1Sel = substat1Sel;
     }
 
     public void setsubstat2Sel(int substat2Sel) {
-        this.substat2Sel = substat2Sel - 1;
+        this.substat2Sel = substat2Sel;
     }
 
     public int getattmagSel() {
@@ -51,6 +51,20 @@ public class FindCharacterVO{
     }
 
     public void setattmagSel(int attmagSel) {
-        this.attmagSel = attmagSel - 1;
+        this.attmagSel = attmagSel;
+    }
+
+    public void reduce1Selector(){
+        this.mainstatSel -= 1;
+        this.substat1Sel -= 1;
+        this.substat2Sel -= 1;
+        this.attmagSel -= 1;
+    }
+
+    public void add1Selector(){
+        this.mainstatSel += 1;
+        this.substat1Sel += 1;
+        this.substat2Sel += 1;
+        this.attmagSel += 1;
     }
 }

@@ -146,7 +146,7 @@
 
 #formSelect{
     width: 300px;
-    margin-top: 12px;
+    margin: 12px auto 0px;
 }
 
 .indexStatSelector{

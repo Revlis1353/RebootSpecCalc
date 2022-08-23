@@ -3,6 +3,7 @@ package com.revlis1353.rebootspec.rebootspec;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -54,7 +55,7 @@ public class Crawler{
         equipmentDocument = process(equipmentUrl);
     }
 
-    public ArrayList<DataItem> getCharacterItemData(){        
+    public ArrayList<DataItem> getCharacterItemData() throws NoSuchElementException{        
         //Get url of each equipments
         Elements equipmentsTags = equipmentDocument.getElementsByClass("weapon_wrap").select("ul > li > span > a");
 
@@ -65,7 +66,10 @@ public class Crawler{
             Element element = (Element)iter.next();
             String elementUrl = element.attr("href");
 
-            if(elementUrl.isBlank()) continue;
+            if(elementUrl.isBlank()) {
+                equipeditem.add(new DataItem());
+                continue;
+            }
 
             //Get Item data from Url
             String itemInfo = jsoupXMLHttpRequest(siteUrlBase + elementUrl, equipmentUrl).body();
@@ -142,6 +146,9 @@ public class Crawler{
         int arcaneMainstat = 0;
         for(Element target : targets){
             String targeturl = target.select("span > a").attr("href");
+            if(targeturl.isBlank()){
+                continue;
+            }
             String arcaneResponseBody = jsoupXMLHttpRequest(siteUrlBase + targeturl, equipmentUrl).body();
             arcaneResponseBody = StringEscapeUtils.unescapeJava(arcaneResponseBody.substring(18, arcaneResponseBody.length()-2));
             

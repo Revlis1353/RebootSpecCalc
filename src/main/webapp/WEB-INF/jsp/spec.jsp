@@ -74,11 +74,14 @@
 
             document.getElementById("mainstat").innerText = 0;
             document.getElementById("substat1").innerText = 0;
-            document.getElementById("substat2").innerText = 0;
             document.getElementById("attmag").innerText = 0;
             document.getElementById("modifyMainstat").value = "";
             document.getElementById("modifySubstat1").value = "";
-            document.getElementById("modifySubstat2").value = "";
+            if("${player.substat2Sel}" >= 0){
+                document.getElementById("substat2").innerText = 0;
+                document.getElementById("modifySubstat2").value = "";
+            }
+            console.log("${player.substat2Sel}");
             document.getElementById("modifyallstatPercent").value = "";
             document.getElementById("modifyStarforce").value = "";
             document.getElementById("modifyPotential0").value = "";
@@ -191,7 +194,9 @@
             if(selectVal < 0) return;
             document.getElementById("mainstat").innerText = items[parseInt(selectVal)].mainstat;
             document.getElementById("substat1").innerText = items[parseInt(selectVal)].substat1;
-            document.getElementById("substat2").innerText = items[parseInt(selectVal)].substat2;
+            if("${player.substat2Sel}" >= 0){
+                document.getElementById("substat2").innerText = items[parseInt(selectVal)].substat2;
+            }
             document.getElementById("attmag").innerText = items[parseInt(selectVal)].attmag;
 
             if(modifyIndex == 13){
