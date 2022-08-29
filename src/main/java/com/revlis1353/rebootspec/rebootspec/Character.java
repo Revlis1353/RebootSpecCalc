@@ -24,6 +24,7 @@ public class Character {
     private ArrayList<DataItem> equipeditem;
     private HyperstatVO hyperstat;
     private DataItem union;
+    private DataItem classSpec;
 
     private String characterName;
     private String characterImgUrl;
@@ -67,6 +68,7 @@ public class Character {
         equipeditem = new ArrayList<DataItem>();
         hyperstat = new HyperstatVO();
         union = new DataItem();
+        classSpec = new DataItem();
     }
 
     @SuppressWarnings("unchecked")
@@ -109,6 +111,7 @@ public class Character {
 
         this.hyperstat = player.getHyperstat();
         this.union = player.getUnion();
+        this.classSpec = player.getClassSpec();
         this.set = player.getSet().clone();
 
         this.mapleSoldier = player.getMapleSoldier();
@@ -182,6 +185,8 @@ public class Character {
             mainstat += 15 * (basemainstat - 18) / 100;
         }
 
+        applyClassSpec();
+
         //Apply union & additional specs
         applyUnion();
 
@@ -201,6 +206,18 @@ public class Character {
             totalsubstat2 = 0;
         }
         totalattmag = attmag * (100 + attmagPercent) / 100;
+    }
+
+    private void applyClassSpec(){
+        mainstat += classSpec.getMainstat();
+        substat1 += classSpec.getSubstat1();
+        attmag += classSpec.getAttmag();
+        attmagPercent += classSpec.getAttmagPercent();
+        dmg += classSpec.getDmg();
+        bossDMG += classSpec.getBossDMG();
+        addPenetrate(classSpec.getPenetrate());
+        critDMG += classSpec.getCritDMG();
+        return;
     }
 
     private void applyHyperstat(){

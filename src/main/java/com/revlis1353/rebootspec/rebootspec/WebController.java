@@ -79,6 +79,10 @@ public class WebController {
         Crawler crawler;
         Character player;
 
+        String targetFile = "csv/class.csv";
+        ClassPathResource path = new ClassPathResource(targetFile);
+        List<DataItem> classes = null;
+
         try {
             crawler = new Crawler(charVO);
             player = new Character(charVO, crawler.getCharacterLevel(), crawler.getCharacterItemData());
@@ -87,6 +91,21 @@ public class WebController {
             player.setBaseFixedMainstat(crawler.getArcaneMainstat());
             player.setHyperstat(crawler.getCharacterHyperstat());
 
+            //Get class spec data from csv
+            classes = new CsvToBeanBuilder<DataItem>(new InputStreamReader(path.getInputStream(), "utf-8"))
+            .withType(DataItem.class)
+            .build()
+            .parse();
+
+            String playerClass = crawler.getCharacterClass();
+
+            for(int i = 0; i < classes.size(); i++){
+                if(classes.get(i).getItemName().equals(playerClass)){
+                    player.setClassSpec(classes.get(i));
+                    break;
+                }
+            }
+
             player.calculateSpec();
             model.addAttribute("player", player);
 
@@ -94,6 +113,7 @@ public class WebController {
             model.addAttribute("playerCompare", playerCompare);
             
         } catch (Exception e) {
+            e.printStackTrace();
             charVO.add1Selector();
             result.rejectValue("characterName", "openInformation");
             return "index";
