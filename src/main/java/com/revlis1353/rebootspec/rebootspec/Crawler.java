@@ -161,6 +161,12 @@ public class Crawler{
         return arcaneMainstat;
     }
 
+    public String getCharacterClass() throws Exception{
+        String characterClass = characterDocument.getElementsByClass("char_info").select("dl").get(1).text();
+        String result = characterClass.split("/")[1];
+        return result;
+    }
+
     private DataItem getEquipment(Document itemDocument){
 
         DataItem item = new DataItem();

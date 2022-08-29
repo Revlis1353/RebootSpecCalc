@@ -33,13 +33,16 @@ public class DataItem{
     private int allstatPercent;
     @CsvBindByName
     private int attmag;
+    @CsvBindByName
     private int attmagPercent;
     private int pureattmag;
+    @CsvBindByName
     private int critDMG;
     @CsvBindByName
     private int bossDMG;
     @CsvBindByName
     private float penetrate;
+    @CsvBindByName
     private int dmg;
     @CsvBindByName
     private int set;    //0: None, 1: boss, 2: dawn, 3: black, 4: ruta, 5: absol, 6: arcane
