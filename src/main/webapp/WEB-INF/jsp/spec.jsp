@@ -95,7 +95,9 @@
             options += "<option value=\"trashval\">없음</option>"
             options += "<option value=\"mainstatPercent\">${player.STATSSELECTER[player.mainstatSel]}%</option>"
             options += "<option value=\"substat1Percent\">${player.STATSSELECTER[player.substat1Sel]}%</option>"
-            options += "<option value=\"substat2Percent\">${player.STATSSELECTER[player.substat2Sel]}%</option>"
+            if("${player.substat2Sel}" >= 0){
+                options += "<option value=\"substat2Percent\">${player.STATSSELECTER[player.substat2Sel]}%</option>"
+            }
             options += "<option value=\"allstatPercent\">올스탯%</option>";
             if(modifyIndex == 2 || modifyIndex == 13 || modifyIndex == 16){
                 options += "<option value=\"attmagPercent\">${player.ATTSELECTER[player.attmagSel]}%</option>";
@@ -130,7 +132,7 @@
         function modifyConfirm(){
             var mainstat = Number(document.getElementById("mainstat").innerText) + Number($("#modifyMainstat").val());
             var substat1 = Number(document.getElementById("substat1").innerText) + Number($("#modifySubstat1").val());
-            var substat2 = Number(document.getElementById("substat2").innerText) + Number($("#modifySubstat2").val());
+            
             if(modifyIndex == 13){
                 var attmag = Number(document.getElementById("attmag").innerText) + Number($("#modifyAttmagSelect").val());
             }
@@ -150,6 +152,11 @@
             var datatoSend = {"itemName": itemName, "modifyIndex": modifyIndex, "mainstat": mainstat, "substat1": substat1, "substat2": substat2,
                              "attmag": attmag, "allstatPercent": allstatPercent, "penetrate": penetrate, "pureattmag": pureattmag, "reqLev": reqLev, "starforce": starforce,
                             "itemImg": itemImg, "bossDMG":bossDMG, "set":set};
+
+            if("${player.substat2Sel}" >= 0) {
+                var substat2 = Number(document.getElementById("substat2").innerText) + Number($("#modifySubstat2").val());
+                datatoSend["substat2"] = substat2;
+            }
             
             for(var i = 0; i < 3; i++){
                 var potentialData = $('#modifyPotential' + i).val();
