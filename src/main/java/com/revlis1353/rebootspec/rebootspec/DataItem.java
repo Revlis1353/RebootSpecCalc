@@ -125,10 +125,18 @@ public class DataItem{
                 if(i < 5){
                     if(modifyIndex != 15 && modifyIndex != 21)
                         starforceAllstat += 2;
+                    else{
+                        mainstat += 2;
+                        substat1 += 2;
+                    }
                 }
                 else if(i < 15){
                     if(modifyIndex != 15 && modifyIndex != 21)
                         starforceAllstat += 3;
+                    else{
+                        mainstat += 3;
+                        substat1 += 3;
+                    }
                 }
                 else if(i < 21){
                     starforceAllstat += starforceStatToAdd;
