@@ -278,8 +278,8 @@ public class WebController {
 
         float critRatio = (135 + playerCompare.getCritDMG()) / (float)(135 + player.getCritDMG()); 
 
-        float playerPenetrate = 100 - 300 * (100 - player.getPenetrate());
-        float playerComparePenetrate = 100 - 300 * (100 - playerCompare.getPenetrate());
+        float playerPenetrate = 10000 - 300 * (100 - player.getPenetrate());
+        float playerComparePenetrate = 10000 - 300 * (100 - playerCompare.getPenetrate());
         float penetrateRatio = playerComparePenetrate / playerPenetrate;
 
         float dmgResult = Math.round((statRatio * attmagRatio * damageRatio * critRatio * penetrateRatio - 1) * 10000) / 100.0f;
