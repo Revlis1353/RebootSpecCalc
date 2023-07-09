@@ -412,17 +412,20 @@
                 penetrate = (10000 - (100 - penetrate) * 85) / 100.0;
             }
 
+            
+
             var datatoSend = {"mainstat": mainstat, "fixedMainstat": fixedMainstat, "substat1": substat1, "substat2": substat2, 
                             "attmag": attmag, "bossDMG": bossDMG, "critDMG": critDMG, "dmg": dmg, "penetrate": penetrate};
 
+            var defense = Number($("#inputDefense").val());
             var mapleSoldier = document.getElementById("mapleSoldier").checked? 1 : 0;
-            var dataMapleSoldier = JSON.stringify({"mapleSoldier": mapleSoldier});
+            var dataUnionBannerEtc = JSON.stringify({"mapleSoldier": mapleSoldier, "defense": defense});
 
             $.ajax({
-                url: "/spec/modifyMapleSoldier",
+                url: "/spec/modifyUnionBannerEtc",
                 type: "POST",
                 contentType: 'application/json',
-                data: dataMapleSoldier,
+                data: dataUnionBannerEtc,
                 success: function(data){
                     $.ajax({
                         url: "/spec/modifyUnion",
@@ -552,6 +555,11 @@
                     <div class="additionalLink">메이플 용사 적용 <input type="checkbox" id="mapleSoldier"></div>
                     <div class="additionalLink">블래스터 유니온 추가방무 <input type="number" class="inputstat" id="blasterPenetrate"></div>
                     <div class="additionalLink"><span class="link">제로 링크(방무 10%)<input type="checkbox" id="zeroLink"></span><span class="link">호영 링크(방무 10%)<input type="checkbox" id="hoyoungLink"></span><span>루미 링크(방무 15%)<input type="checkbox" id="lumiLink"></span></div>
+                    
+                </div>
+                <hr class="line">
+                <div id="bannerEnemy">
+                    <div class="additionalLink">적 방어율: <input type="number" value="300" class="inputDefense" id="inputDefense"></div>
                 </div>
                 <div>
                     <button class="buttons" onclick="modifyConfirmUnion();">적용</button>
@@ -635,10 +643,6 @@
                     </tr>
                 </table>
             </div>
-            <div id="applybuttons">
-                <button class="buttons" onclick="modifyApply();">적용</button>
-                <button class="buttons" onclick="modifyReset();">초기화</button>
-            </div>
             <div id="itemDescripterOuter">
                 <table class="itemDescripterTable">
                     <tr><td>
@@ -687,6 +691,10 @@
                         </div>
                     </td></tr>
                 </table>
+                <div id="applybuttons">
+                    <button class="buttons" id="buttonsApplyItem" onclick="modifyApply();">임시저장</button>
+                    <button class="buttons" id="buttonsApplyItem" onclick="modifyReset();">초기화</button>
+                </div>
             </div>
         </div>
     </div>

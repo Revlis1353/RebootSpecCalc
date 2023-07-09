@@ -250,8 +250,8 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping("/spec/modifyMapleSoldier")
-    public int modifyMapleSoldier(@RequestBody Map<String, Integer> data, BindingResult result, Model model) {
+    @RequestMapping("/spec/modifyUnionBannerEtc")
+    public int modifyUnionBannerEtc(@RequestBody Map<String, Integer> data, BindingResult result, Model model) {
         Character player = (Character)model.getAttribute("player");
         Character playerCompare = (Character)model.getAttribute("playerCompare");
 
@@ -259,6 +259,8 @@ public class WebController {
         
         player.setMapleSoldier(data.get("mapleSoldier"));
         playerCompare.setMapleSoldier(data.get("mapleSoldier"));
+        player.setEnemyDefense(data.get("defense"));
+        playerCompare.setEnemyDefense(data.get("defense"));
         return 0;
     }
 
@@ -278,8 +280,8 @@ public class WebController {
 
         float critRatio = (135 + playerCompare.getCritDMG()) / (float)(135 + player.getCritDMG()); 
 
-        float playerPenetrate = 10000 - 300 * (100 - player.getPenetrate());
-        float playerComparePenetrate = 10000 - 300 * (100 - playerCompare.getPenetrate());
+        float playerPenetrate = 10000 - player.getEnemyDefense() * (100 - player.getPenetrate());
+        float playerComparePenetrate = 10000 - player.getEnemyDefense() * (100 - playerCompare.getPenetrate());
         float penetrateRatio = playerComparePenetrate / playerPenetrate;
 
         float dmgResult = Math.round((statRatio * attmagRatio * damageRatio * critRatio * penetrateRatio - 1) * 10000) / 100.0f;

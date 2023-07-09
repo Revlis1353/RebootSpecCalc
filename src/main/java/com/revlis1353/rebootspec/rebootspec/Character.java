@@ -61,7 +61,9 @@ public class Character {
     private int totalattmag;
 
     private int mapleSoldier;
+    private int enemyDefense;
 
+    /* 0: None, 1: Boss, 2: Dawn, 3: Pitched, 4: Rootabyss, 5: Absol, 6: Arcane, 77: Lucky Item */
     private int set[];
 
     public Character(){
@@ -69,6 +71,7 @@ public class Character {
         hyperstat = new HyperstatVO();
         union = new DataItem();
         classSpec = new DataItem();
+        enemyDefense = 300;
     }
 
     @SuppressWarnings("unchecked")
@@ -115,6 +118,7 @@ public class Character {
         this.set = player.getSet().clone();
 
         this.mapleSoldier = player.getMapleSoldier();
+        this.enemyDefense = player.getEnemyDefense();
     }
 
     public Character(FindCharacterVO charVO, int level, ArrayList<DataItem> equipeditem){
@@ -158,10 +162,12 @@ public class Character {
         penetrate = 0;
         dmg = 0;
         fixedMainstat = 0;
+        boolean isLuckyItemApplied = false; //Set to true if the lucky item is applied to the set option
         set = new int[7];
 
         //Apply item spec
         for(DataItem item : equipeditem){
+            //System.out.println(item.getItemName() + ": " + item.getAttmagPercent());
             mainstat += item.getMainstat();
             substat1 += item.getSubstat1();
             substat2 += item.getSubstat2();
@@ -174,7 +180,12 @@ public class Character {
             bossDMG += item.getBossDMG();
             dmg += item.getDmg();
             addPenetrate(item.getPenetrate());
-            set[item.getSet()] += 1;
+            if(item.getSet() == 77){   
+                isLuckyItemApplied = true;
+            }
+            else{
+                set[item.getSet()] += 1;
+            }
         }
         mainstat += basemainstat;
         substat1 += basesubstat1;
@@ -193,8 +204,16 @@ public class Character {
         //Apply hyperstat
         applyHyperstat();
 
+        //Apply Lucky item's effect
+        if(isLuckyItemApplied){
+            for(int i = 0; i < 7; i++){
+                if(set[i] != 0) set[i] += 1;
+            }
+        }
         //Apply set options
         applySetOption();
+
+        printset();
 
         //Apply percent options
         totalmainstat = fixedMainstat + mainstat * (100 + mainstatPercent + allstatPercent) / 100;
