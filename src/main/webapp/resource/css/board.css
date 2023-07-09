@@ -102,8 +102,12 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 570px;
-    height: 500px;
+    height: 570px;
     background-color: white;
+}
+
+#bannerEnemy{
+    margin-bottom: 20px;
 }
 
 .bannerTitle{
@@ -406,7 +410,7 @@ td.itemTable{
     border: 1px solid black;
     box-shadow: 1px 1px 1px;
     cursor : pointer;
-    width: 50px;
+    width: 60px;
 }
 
 #buttonHyper{
@@ -417,4 +421,18 @@ td.itemTable{
 #buttonUnion{
     margin-left: 10px;
     width: 150px;
+}
+
+#applybuttons{
+    margin-top: 20px;
+}
+
+#buttonsApplyItem{
+    height: 30px;
+}
+
+#inputDefense{
+    width: 60px;
+    text-align: center;
+    margin-right:5px;
 }

@@ -215,6 +215,9 @@ public class Crawler{
         else if(itemName.contains("아케인셰이드")){
             item.setSet(6);
         }
+        else if(itemName.contains("제네시스")){
+            item.setSet(77);
+        }
 
         for(Element stat : Stats){  //Find main Stats
             if(stat.select("div > span").text().equals(STATSSELECTER[mainstatSel])){
