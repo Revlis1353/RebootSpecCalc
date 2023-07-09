@@ -213,8 +213,6 @@ public class Character {
         //Apply set options
         applySetOption();
 
-        printset();
-
         //Apply percent options
         totalmainstat = fixedMainstat + mainstat * (100 + mainstatPercent + allstatPercent) / 100;
         totalsubstat1 = substat1 * (100 + substat1Percent + allstatPercent) / 100;
