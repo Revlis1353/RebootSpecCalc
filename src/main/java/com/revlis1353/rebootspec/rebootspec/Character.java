@@ -207,7 +207,7 @@ public class Character {
         //Apply Lucky item's effect
         if(isLuckyItemApplied){
             for(int i = 0; i < 7; i++){
-                if(set[i] != 0) set[i] += 1;
+                if(set[i] >= 3) set[i] += 1;
             }
         }
         //Apply set options
