@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.revlis1353.rebootspec'
-version = '0.0.9-2'
+version = '0.0.9-1'
 sourceCompatibility = '17'
 apply plugin: 'war'
 
