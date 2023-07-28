@@ -15,7 +15,7 @@
             location.reload();
         }
     </script>
-    <title></title>
+    <title>리부트 스펙업 계산기</title>
 </head>
 
 <body>

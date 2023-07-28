@@ -460,6 +460,7 @@
         }
 
     </script>
+    <title>리부트 스펙업 계산기</title>
     <link rel="stylesheet" href="resource/css/board.css" type="text/css">
 </head>
 
