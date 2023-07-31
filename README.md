@@ -9,6 +9,11 @@ Requirements:
 
 How to use:
 
+  0. Connect http://rebootspec.site (no java needed)
+  1. Enjoy
+
+  or to install on your server
+
   0. Install Java 17 and download RebootSpecCalc release files
   1. Unzip release file and run 'run.bat'
   2. Turn on the Internet and go to '127.0.0.1:8080'
